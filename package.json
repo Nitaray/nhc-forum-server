@@ -1,0 +1,22 @@
+{
+  "name": "nhc-forum-server",
+  "version": "1.0.0",
+  "description": "Backend server for NHC Forum",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Nitaray/nhc-forum-server.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Nitaray/nhc-forum-server/issues"
+  },
+  "homepage": "https://github.com/Nitaray/nhc-forum-server#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
