@@ -3,14 +3,43 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/www",
+    "tsc": "tsc",
+    "dev": "./node_modules/.bin/ts-node-dev --respawn --transpile-only src/app.ts",
+    "prod": "./node_modules/.bin/tsc && node app.js"
   },
   "dependencies": {
+    "buckets-js": "^1.98.2",
     "cookie-parser": "~1.4.4",
     "debug": "~2.6.9",
+    "dotenv": "^8.2.0",
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
-    "jade": "~1.11.0",
     "morgan": "~1.9.1"
+  },
+  "main": "app.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Nitaray/nhc-forum-server.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Nitaray/nhc-forum-server/issues"
+  },
+  "homepage": "https://github.com/Nitaray/nhc-forum-server#readme",
+  "description": "",
+  "devDependencies": {
+    "@types/express": "^4.17.9",
+    "@types/mysql": "^2.15.15",
+    "@types/node": "^14.14.8",
+    "datastructure-ts": "^0.1.5",
+    "jade": "^1.11.0",
+    "nodemon": "^2.0.6",
+    "ts-essentials": "^7.0.1",
+    "ts-node": "^9.0.0",
+    "ts-node-dev": "^1.0.0",
+    "typescript": "^4.0.5"
   }
 }
