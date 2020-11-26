@@ -41,7 +41,7 @@ export class Thread implements ForumRelation {
 
     public addToDatabase(modifier: Modifier): void {
         let values: Array<StringValuePair> = [
-            {key: "UserID", value: this.creatorID},
+            {key: "CreatorID", value: this.creatorID},
             {key: "DateCreated", value: this.dateCreated},
             {key: "ThreadTitle", value: this.title},
             {key: "Content", value: this.content}
@@ -58,7 +58,7 @@ export class Thread implements ForumRelation {
 
     public updateToDatabase(modifier: Modifier): void {
         let values: Array<StringValuePair> = [
-            {key: "UserID", value: this.creatorID},
+            {key: "CreatorID", value: this.creatorID},
             {key: "DateCreated", value: this.dateCreated},
             {key: "ThreadTitle", value: this.title},
             {key: "Content", value: this.content}
