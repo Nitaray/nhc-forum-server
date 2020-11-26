@@ -1,9 +1,9 @@
-import * as mysql from 'mysql';
+import * as pg from 'pg';
 import {Modifier} from './Modifier';
 import {StringValuePair} from '../../types/StringValuePair';
 
 export class CommentModifier extends Modifier {
-    constructor(connection: mysql.Connection) {
+    constructor(connection: pg.Client) {
         super(connection);
 
         this.fields.set("CreatorID", 1);
@@ -14,9 +14,9 @@ export class CommentModifier extends Modifier {
         this.param_size = 4;
 
         this.addSQL = "INSERT INTO \"Comment\" (CreatorID, DateCreated, ContainingThreadID, Content)" +
-                      " VALUES (?, ?, ?, ?)";
+                      " VALUES ($1, $2, $3, $4)";
         
-        this.removeSQL = "DELETE FROM \"Comment\" WHERE CommentID = ?";
+        this.removeSQL = "DELETE FROM \"Comment\" WHERE CommentID = $1";
     }
 
     public update(ID: number, values: Array<StringValuePair>): boolean {
@@ -25,7 +25,7 @@ export class CommentModifier extends Modifier {
     }
 
     public updateContent(ID: number, newContent: string): boolean {
-        let sqlQuery: string = "UPDATE \"Comment\" SET Content = ? WHERE CommentID = ?";
+        let sqlQuery: string = "UPDATE \"Comment\" SET Content = $1 WHERE CommentID = $2";
         return this.updateOneFieldOfID(ID, newContent, sqlQuery);
     }
 }

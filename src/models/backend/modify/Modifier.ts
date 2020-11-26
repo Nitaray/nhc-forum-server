@@ -1,10 +1,10 @@
-import * as mysql from 'mysql';
+import * as pg from 'pg';
 import {StringValuePair} from '../../types/StringValuePair';
 
 export class Modifier {
     protected fields: Map<string, number>;
 
-    protected connection: mysql.Connection;
+    protected connection: pg.Client;
 
     protected addSQL: string;
     protected removeSQL: string;
@@ -12,24 +12,25 @@ export class Modifier {
 
     protected param_size: number = 0;
 
-    constructor(connection: mysql.Connection) {
+    constructor(connection: pg.Client) {
         this.connection = connection;
     }
 
     protected queryExecution(queryStr: string, paramsValues: any[]): void {
-        this.connection.beginTransaction(function(err) {
+        // Begin transaction
+        this.connection.query("BEGIN", function(err) {
             if (err) throw err;
             
             this.connection.query(queryStr, paramsValues, function(err, results) {
                 if (err) {
-                    return this.connection.rollback(function() {
+                    return this.connection.query("ROLLBACK", function() {
                         throw err;
                     });
                 }
                 
-                this.connection.commit(function(err) {
+                this.connection.query("COMMIT", function(err) {
                     if (err) {
-                        return this.connection.rollback(function() {
+                        return this.connection.query("ROLLBACK", function() {
                             throw err;
                         });
                     }

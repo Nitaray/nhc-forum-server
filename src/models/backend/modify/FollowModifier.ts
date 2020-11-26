@@ -1,9 +1,9 @@
-import * as mysql from 'mysql';
+import * as pg from 'pg';
 import {Modifier} from './Modifier';
 import {StringValuePair} from '../../types/StringValuePair';
 
 export class FollowModifier extends Modifier {
-    constructor(connection: mysql.Connection) {
+    constructor(connection: pg.Client) {
         super(connection);
 
         this.fields.set("UserID", 1);
@@ -12,9 +12,9 @@ export class FollowModifier extends Modifier {
         this.param_size = 3;
 
         this.addSQL = "INSERT INTO \"Follows\" (UserID, ThreadID, FollowedSince)" +
-                      " VALUES (?, ?, ?)";
+                      " VALUES ($1, $2, $3)";
         
-        this.removeSQL = "DELETE FROM \"Follows\" WHERE UserID = ? AND ThreadID = ?";
+        this.removeSQL = "DELETE FROM \"Follows\" WHERE UserID = $1 AND ThreadID = $2";
     }
 
     public remove(ID: number): boolean {

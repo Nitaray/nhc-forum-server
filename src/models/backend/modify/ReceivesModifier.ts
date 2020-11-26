@@ -1,9 +1,9 @@
 import {Modifier} from './Modifier';
 import {StringValuePair} from '../../types/StringValuePair';
-import * as mysql from 'mysql';
+import * as pg from 'pg';
 
 export class ReceivesModifier extends Modifier {
-    public constructor(connection: mysql.Connection) {
+    public constructor(connection: pg.Client) {
         super(connection);
 
         this.fields.set("UserID", 1);
@@ -14,9 +14,9 @@ export class ReceivesModifier extends Modifier {
         this.param_size = 4;
 
         this.addSQL = "INSERT INTO \"Receives\" (UserID, NotificationID, DateReceived, DateRead)" +
-                      " VALUES (?, ?, ?, ?)";
+                      " VALUES ($1, $2, $3, $4)";
 
-        this.removeSQL = "DELETE FROM \"Receives\" WHERE UserID = ? AND NotificationID = ?";
+        this.removeSQL = "DELETE FROM \"Receives\" WHERE UserID = $1 AND NotificationID = $2";
     }
 
     public remove(ID: number): boolean {
@@ -42,7 +42,7 @@ export class ReceivesModifier extends Modifier {
     }
 
     public updateDateRead(userID: number, notificationID: number, readDate: Date): boolean {
-        let sqlQuery: string = "UPDATE \"Receives\" SET DateRead = ? WHERE UserID = ? AND NotificationID = ?";
+        let sqlQuery: string = "UPDATE \"Receives\" SET DateRead = $1 WHERE UserID = $2 AND NotificationID = $3";
         let date: string = readDate.getUTCFullYear() + '-' +
                             ('00' + (readDate.getUTCMonth()+1)).slice(-2) + '-' +
                             ('00' + readDate.getUTCDate()).slice(-2) + ' ' + 

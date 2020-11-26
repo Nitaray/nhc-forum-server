@@ -1,4 +1,4 @@
-import * as mysql from 'mysql';
+import * as pg from 'pg';
 import dotenv from 'dotenv';
 
 // load the environment variables from the .env file
@@ -11,22 +11,23 @@ export class DatabaseConnectionManager {
     private static username: string = process.env.DB_USER;
     private static password: string = process.env.DB_PASS;
     private static dbName: string = process.env.DB_NAME;
-    private static connection: mysql.Connection = null;
+    private static connection: pg.Client = null;
 
-    private static createConnection(): mysql.Connection {
+    private static createConnection(): pg.Client {
         try {
-            this.connection = mysql.createConnection({
+            this.connection = new pg.Client({
                 host: this.url,
                 user: this.username,
                 password: this.password,
-                database: this.dbName
+                database: this.dbName,
+                port: 5432
             });
 
             this.connection.connect(function(err): void {
                 if (err) throw err;
                 console.log("Connected!");
             });
-            
+
             return this.connection;
         } catch (e) {
             console.log('Failed to connect to database.');
@@ -34,7 +35,7 @@ export class DatabaseConnectionManager {
         }
     }
 
-    public static getConnection(): mysql.Connection {
+    public static getConnection(): pg.Client {
         if (this.connection == null)
             this.connection = this.createConnection();
         
