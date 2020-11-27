@@ -2,7 +2,7 @@ import {Modifier} from '../modify/Modifier';
 import {Querier} from '../query/Querier';
 import {ForumRelation} from './ForumRelation';
 
-export class Comment implements ForumRelation {
+export class User implements ForumRelation {
     private ID: number = 0;
     private username: string = "";
     private email: string = "";
