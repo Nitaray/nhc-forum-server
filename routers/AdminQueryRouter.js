@@ -32,7 +32,7 @@ class AdminQueryRouter {
     }
     _configure() {
         this._router.post('/', function (req, res) {
-            let sqlQuery = req.body.sqlQuery;
+            let sqlQuery = req.params.sqlQuery;
             let connection = DatabaseConnectionManager_1.DatabaseConnectionManager.getConnection();
             try {
                 // perform querying

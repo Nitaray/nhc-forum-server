@@ -15,7 +15,7 @@ class AdminQueryRouter {
 
     private _configure() {
         this._router.post('/', function(req, res) {
-            let sqlQuery: string = req.body.sqlQuery;
+            let sqlQuery: string = req.params.sqlQuery;
         
             let connection: pg.Client = DatabaseConnectionManager.getConnection();
         

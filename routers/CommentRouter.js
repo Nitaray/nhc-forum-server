@@ -34,7 +34,7 @@ class CommentRouter {
     }
     _configure() {
         this._router.get('/', (req, res, next) => {
-            let commentID = req.body.CommentID;
+            let commentID = +req.params.CommentID;
             let commentQuerier = new CommentQuerier_1.CommentQuerier(DatabaseConnectionManager_1.DatabaseConnectionManager.getConnection());
             let commentData = commentQuerier.getByID(commentID);
             let userQuerier = new UserQuerier_1.UserQuerier(DatabaseConnectionManager_1.DatabaseConnectionManager.getConnection());

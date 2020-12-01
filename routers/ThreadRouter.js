@@ -35,7 +35,7 @@ class ThreadRouter {
     }
     _configure() {
         this._router.get('/', (req, res, next) => {
-            let threadID = req.body.ThreadID;
+            let threadID = +req.params.ThreadID;
             let threadQuerier = new ThreadQuerier_1.ThreadQuerier(DatabaseConnectionManager_1.DatabaseConnectionManager.getConnection());
             let threadData = threadQuerier.getByID(threadID);
             let userQuerier = new UserQuerier_1.UserQuerier(DatabaseConnectionManager_1.DatabaseConnectionManager.getConnection());
