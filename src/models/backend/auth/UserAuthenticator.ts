@@ -12,8 +12,8 @@ export class UserAuthenticator {
             this.connection.query(sqlQuery, [username], function(err, results) {
                 if (err) throw err;
                 
-                if (results[0] != null) {
-                    let correctHashedPassword: string = results[0].Password;
+                if (results.rows[0] != null) {
+                    let correctHashedPassword: string = results.rows[0].Password;
                     let hashedPassword: string = AuthUtil.hashString(password);
 
                     console.log("Password: " + correctHashedPassword + "\nEntered: " + hashedPassword);

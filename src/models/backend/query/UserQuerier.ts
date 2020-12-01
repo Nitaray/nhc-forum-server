@@ -3,6 +3,7 @@ import { ForumRelation } from '../component/ForumRelation';
 import { Querier } from './Querier';
 import * as pg from 'pg';
 import e from 'express';
+import { urlencoded } from 'body-parser';
 
 export class UserQuerier extends Querier {
     constructor(connection: pg.Client) {
@@ -118,6 +119,22 @@ export class UserQuerier extends Querier {
             console.log(e);
         }
         return regDate;
+    }
+
+    public getUsername(id: number): string {
+        let SQL: string = "SELECT Username FROM \"User\" WHERE UserID = $1";
+        let username: string = null;
+        try {
+            this.connection.query(SQL, [id], function(err, res) {
+                if (err) throw err;
+
+                if (res.rowCount > 0)
+                    username = res.rows[0].Username;
+            });
+        } catch (e) {
+            console.log(e);
+        }
+        return username;
     }
 
     public getRoleID(id: number): number {

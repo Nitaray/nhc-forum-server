@@ -13,7 +13,7 @@ export abstract class Querier {
         try {
             let relations: Array<ForumRelation> = null;
 
-            this.connection.query(this.querySQL, [id], function(err, res) {
+            this.connection.query(this.querySQL, [id], (err, res) => {
                 if (err) throw err;
 
                 relations = this.prepareRelations(res);
