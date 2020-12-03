@@ -7,7 +7,7 @@ class UserAuthenticator {
     static auth(username, password) {
         let authentication = false;
         try {
-            let sqlQuery = "SELECT Password FROM \"User\" WHERE Username = ?";
+            let sqlQuery = "SELECT Password FROM \"User\" WHERE Username = $1";
             this.connection.query(sqlQuery, [username], function (err, results) {
                 if (err)
                     throw err;

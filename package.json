@@ -6,7 +6,8 @@
     "start": "node ./bin/www",
     "tsc": "tsc",
     "dev": "./node_modules/.bin/ts-node-dev --respawn --transpile-only src/app.ts",
-    "prod": "./node_modules/.bin/tsc -w && node app.js"
+    "prod": "./node_modules/.bin/tsc && node app.js",
+    "compile": "./node_modules/.bin/tsc"
   },
   "dependencies": {
     "body-parser": "^1.19.0",

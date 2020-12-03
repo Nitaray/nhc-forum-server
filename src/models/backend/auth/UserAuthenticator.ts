@@ -7,7 +7,7 @@ export class UserAuthenticator {
     public static auth(username: string, password: string): boolean {
         let authentication: boolean = false;
         try {
-            let sqlQuery: string = "SELECT Password FROM \"User\" WHERE Username = ?";
+            let sqlQuery: string = "SELECT Password FROM \"User\" WHERE Username = $1";
 
             this.connection.query(sqlQuery, [username], function(err, results) {
                 if (err) throw err;
