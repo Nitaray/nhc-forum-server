@@ -30,6 +30,6 @@ let server: Server = new Server();
 server.app.use('/', masterRouter);
 
 // Make the server listen on the port specified in the .env file
-((port = process.env.APP_PORT) => {
+((port = process.env.PORT || 3000) => {
     server.app.listen(port, () => console.log(`> Listening on port ${port}`));
 })();
