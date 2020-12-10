@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node build/app.js",
+    "start": "npm run tsc && node build/app.js",
     "tsc": "tsc",
     "dev": "./node_modules/.bin/ts-node-dev --respawn --transpile-only src/app.ts",
     "prod": "./node_modules/.bin/tsc && node app.js",
