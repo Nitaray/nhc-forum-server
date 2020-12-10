@@ -21,7 +21,7 @@ class CommentRouter {
             let commentID: number = +req.params.CommentID;
         
             let commentQuerier = new CommentQuerier(DatabaseConnectionManager.getConnection());
-            let commentData = commentQuerier.getByID(commentID) as Comment;
+            let commentData = commentQuerier.getCommentByID(commentID);
         
             let userQuerier = new UserQuerier(DatabaseConnectionManager.getConnection());
             let authorUsername = userQuerier.getUsername(commentData.getCreatorID());

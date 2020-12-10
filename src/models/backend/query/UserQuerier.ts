@@ -48,12 +48,14 @@ export class UserQuerier extends Querier {
                 relations.push(new User(userID, username, email, firstName, lastName, DOB, status, regDate, gender,
                                         country, password, about, roleID));
             }
-
-            return relations;
         } catch (e) {
             console.log(e);
         }
-        return null;
+        return relations;
+    }
+
+    public getUserByID(id: number): User {
+        return this.getByID(id) as User;
     }
 
     public checkUsername(username: string): boolean {

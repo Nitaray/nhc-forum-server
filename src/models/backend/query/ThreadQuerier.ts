@@ -29,13 +29,15 @@ export class ThreadQuerier extends Querier {
 
                 relations.push(new Thread(creatorID, title, content, threadID, dateCreated));
             }
-
-            return relations;
         } catch (e) {
             console.log(e);
         }
 
-        return null;
+        return relations;
+    }
+
+    public getThreadByID(id: number): Thread {
+        return this.getByID(id) as Thread;
     }
 
     public getRecentThreadsID(): Array<number> {

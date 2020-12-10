@@ -37,6 +37,10 @@ export class CommentQuerier extends Querier {
         return null;
     }
 
+    public getCommentByID(id: number): Comment {
+        return this.getByID(id) as Comment;
+    }
+
     public getCommentIDsByThreadID(containingThreadID: number): Array<number> {
         let SQL: string = "SELECT CommentID FROM Comment WHERE ContainingThreadID = $1";
         try {

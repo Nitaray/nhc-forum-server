@@ -22,7 +22,7 @@ class ThreadRouter {
             let threadID: number = +req.params.ThreadID;
         
             let threadQuerier = new ThreadQuerier(DatabaseConnectionManager.getConnection());
-            let threadData = threadQuerier.getByID(threadID) as Thread;
+            let threadData = threadQuerier.getThreadByID(threadID);
         
             let userQuerier = new UserQuerier(DatabaseConnectionManager.getConnection());
             let authorUsername = userQuerier.getUsername(threadData.getCreatorID());

@@ -9,7 +9,7 @@ export abstract class Querier {
         this.connection = connection;
     }
 
-    public getByID(id: number): ForumRelation {
+    protected getByID(id: number): ForumRelation {
         try {
             let relations: Array<ForumRelation> = null;
 
@@ -22,7 +22,7 @@ export abstract class Querier {
                     throw new Error("ID does not exist or there are duplicate IDs.");
             });
 
-            return relations.reverse().pop();
+            return relations.shift();
         } catch (e) {
             console.log(e);
         }
