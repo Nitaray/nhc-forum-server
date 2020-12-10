@@ -7,7 +7,7 @@ export class ThreadQuerier extends Querier {
     constructor(connection: pg.Client) {
         super(connection);
 
-        this.querySQL = 'SELECT * FROM \"Thread\" WHERE ThreadID = $1';
+        this.querySQL = 'SELECT * FROM \"Thread\" WHERE \"ThreadID\" = $1';
     }
 
     protected prepareRelations(res: pg.QueryResult): Array<ForumRelation> {

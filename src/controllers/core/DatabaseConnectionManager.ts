@@ -20,7 +20,8 @@ export class DatabaseConnectionManager {
                 user: this.username,
                 password: this.password,
                 database: this.dbName,
-                port: 5432
+                port: 5432,
+                ssl: true
             });
 
             this.connection.connect(function(err): void {
