@@ -17,9 +17,9 @@ class RegisterRouter {
 
     private _configure() {
         this._router.post('/', (req: Request, res: Response, next: NextFunction) => {
-            let username: string = req.params.Username;
-            let email: string = req.params.Email;
-            let hashedPassword: string = AuthUtil.hashString(req.params.Password + username);
+            let username: string = req.body.Username;
+            let email: string = req.body.Email;
+            let hashedPassword: string = AuthUtil.hashString(req.body.Password + username);
 
             let regDateObj = new Date(Date.now());
 

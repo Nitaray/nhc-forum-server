@@ -15,8 +15,8 @@ class FollowedThreadsRouter {
     }
 
     private _configure() {
-        this._router.post('/', (req: Request, res: Response, next: NextFunction) => {
-            let userID: number = +req.params.UserID;
+        this._router.get('/', (req: Request, res: Response, next: NextFunction) => {
+            let userID: number = +req.query.UserID;
             let threadQuerier = new ThreadQuerier(DatabaseConnectionManager.getConnection());
             let followedThreadsIDs = threadQuerier.getFollowedThreadsID(userID);
 

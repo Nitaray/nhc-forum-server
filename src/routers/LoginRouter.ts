@@ -17,8 +17,8 @@ class LoginRouter {
 
     private _configure() {
         this._router.post('/', (req: Request, res: Response, next: NextFunction) => {
-            let password: string = req.params.Password;
-            let username: string = req.params.Username;
+            let password: string = req.body.Password;
+            let username: string = req.body.Username;
 
             let ck_pwd: boolean = UserAuthenticator.auth(username, password);
 

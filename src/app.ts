@@ -6,7 +6,7 @@ import MasterRouter from './routers/MasterRouter';
 // Instruction to make server be able to receive requests from clients 
 let app = express();
 app.use(bodyParser.urlencoded({
-    extended: true
+    extended: false
 }));
 app.use(bodyParser.json());
 
