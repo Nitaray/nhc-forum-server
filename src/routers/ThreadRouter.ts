@@ -48,8 +48,8 @@ class ThreadRouter {
         });
 
         this._router.post('/createThread', (req: Request, res: Response, next: NextFunction) => {            
-            var title: string = req.query.ThreadTitle as string;
-            var content: string = req.query.Content as string;
+            var title: string = req.body.ThreadTitle as string;
+            var content: string = req.body.Content as string;
             var dateCreatedObj: Date = new Date(Date.now());
 
             let dateCreated: string = dateCreatedObj.getUTCFullYear() + '-' +
@@ -65,24 +65,24 @@ class ThreadRouter {
         });
 
         this._router.post('/updateThreadContent', (req: Request, res: Response, next: NextFunction) => {
-            var content: string = req.query.Content as string;
-            var threadID: number = +req.query.ThreadID;
+            var content: string = req.body.Content as string;
+            var threadID: number = +req.body.ThreadID;
 
             let threadModifier: ThreadModifier = new ThreadModifier(DatabaseConnectionManager.getConnection());
             threadModifier.updateContent(threadID, content);
         });
 
         this._router.post('/updateThreadTitle', (req: Request, res: Response, next: NextFunction) => {
-            var title: string = req.query.ThreadTitle as string;
-            var threadID: number = +req.query.ThreadID;
+            var title: string = req.body.ThreadTitle as string;
+            var threadID: number = +req.body.ThreadID;
 
             let threadModifier: ThreadModifier = new ThreadModifier(DatabaseConnectionManager.getConnection());
             threadModifier.updateThreadTitle(threadID, title);
         });
 
         this._router.post('/updateThreadCreator', (req: Request, res: Response, next: NextFunction) => {
-            var creatorID: number = +req.query.CreatorID;
-            var threadID: number = +req.query.ThreadID;
+            var creatorID: number = +req.body.CreatorID;
+            var threadID: number = +req.body.ThreadID;
 
             let threadModifier: ThreadModifier = new ThreadModifier(DatabaseConnectionManager.getConnection());
             threadModifier.updateCreatorID(threadID, creatorID);

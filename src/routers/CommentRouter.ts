@@ -40,7 +40,7 @@ class CommentRouter {
         });
 
         this._router.post('/createComment', (req: Request, res: Response, next: NextFunction) => {
-            var content: string = req.query.Content as string;
+            var content: string = req.body.Content as string;
             var dateCreatedObj: Date = new Date(Date.now());
 
             let dateCreated: string = dateCreatedObj.getUTCFullYear() + '-' +
@@ -55,8 +55,8 @@ class CommentRouter {
         });
 
         this._router.post('/updateComment', (req: Request, res: Response, next: NextFunction) => {
-            var content: string = req.query.Content as string;
-            var commentID: number = +req.query.CommentID;
+            var content: string = req.body.Content as string;
+            var commentID: number = +req.body.CommentID;
 
             let commentModifier: CommentModifier = new CommentModifier(DatabaseConnectionManager.getConnection());
             commentModifier.updateContent(commentID, content);
