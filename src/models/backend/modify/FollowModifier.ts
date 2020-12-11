@@ -6,15 +6,15 @@ export class FollowModifier extends Modifier {
     constructor(connection: pg.Client) {
         super(connection);
 
-        this.fields.set("UserID", 1);
-        this.fields.set("ThreadID", 2);
-        this.fields.set("FollowedSince", 3);
+        this.fields.set("\"UserID\"", 1);
+        this.fields.set("\"ThreadID\"", 2);
+        this.fields.set("\"FollowedSince\"", 3);
         this.param_size = 3;
 
-        this.addSQL = "INSERT INTO \"Follows\" (UserID, ThreadID, FollowedSince)" +
+        this.addSQL = "INSERT INTO \"Follows\" (\"UserID\", \"ThreadID\", \"FollowedSince\")" +
                       " VALUES ($1, $2, $3)";
         
-        this.removeSQL = "DELETE FROM \"Follows\" WHERE UserID = $1 AND ThreadID = $2";
+        this.removeSQL = "DELETE FROM \"Follows\" WHERE \"UserID\" = $1 AND \"ThreadID\" = $2";
     }
 
     public remove(ID: number): boolean {

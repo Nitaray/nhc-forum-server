@@ -2,14 +2,12 @@ import { User } from '../component/User';
 import { ForumRelation } from '../component/ForumRelation';
 import { Querier } from './Querier';
 import * as pg from 'pg';
-import e from 'express';
-import { urlencoded } from 'body-parser';
 
 export class UserQuerier extends Querier {
     constructor(connection: pg.Client) {
         super(connection);
 
-        this.querySQL = "SELECT  * FROM \"User\" WHERE UserID = $1";
+        this.querySQL = "SELECT  * FROM \"User\" WHERE \"UserID\" = $1";
     }
 
     protected prepareRelations(res: pg.QueryResult): Array<ForumRelation> {
@@ -59,11 +57,14 @@ export class UserQuerier extends Querier {
     }
 
     public checkUsername(username: string): boolean {
-        let SQL: string = "SELECT * FROM \"User\" WHERE Username = $1";
+        let SQL: string = "SELECT * FROM \"User\" WHERE \"Username\" = $1";
         let userExists: boolean = false;
         try {
             this.connection.query(SQL, [username], function(err, res) {
-                if (err) throw err;
+                if (err) {
+                    console.log(err);
+                    return;
+                }
 
                 if (res.rowCount > 0)
                     userExists = true;
@@ -75,11 +76,14 @@ export class UserQuerier extends Querier {
     }
 
     public checkEmail(email: string): boolean {
-        let SQL: string = "SELECT * FROM \"User\" WHERE Email = $1";
+        let SQL: string = "SELECT * FROM \"User\" WHERE \"Email\" = $1";
         let emailExists: boolean = false;
         try {
             this.connection.query(SQL, [email], function(err, res) {
-                if (err) throw err;
+                if (err) {
+                    console.log(err);
+                    return;
+                }
 
                 if (res.rowCount > 0)
                     emailExists = true;
@@ -91,11 +95,14 @@ export class UserQuerier extends Querier {
     }
 
     public getID(username: string): number {
-        let SQL: string = "SELECT UserID FROM \"User\" WHERE Username = $1";
+        let SQL: string = "SELECT \"UserID\" FROM \"User\" WHERE \"Username\" = $1";
         let userID: number = 0;
         try {
             this.connection.query(SQL, [username], function(err, res) {
-                if (err) throw err;
+                if (err) {
+                    console.log(err);
+                    return;
+                }
 
                 if (res.rowCount > 0)
                     userID = res.rows[0].UserID;
@@ -108,11 +115,14 @@ export class UserQuerier extends Querier {
 
 
     public getRegDate(id: number): Date {
-        let SQL: string = "SELECT RegistrationDate FROM \"User\" WHERE UserID = $1";
+        let SQL: string = "SELECT \"RegistrationDate\" FROM \"User\" WHERE \"UserID\" = $1";
         let regDate: Date = null;
         try {
             this.connection.query(SQL, [id], function(err, res) {
-                if (err) throw err;
+                if (err) {
+                    console.log(err);
+                    return;
+                }
 
                 if (res.rowCount > 0)
                     regDate = res.rows[0].RegistrationDate;
@@ -124,11 +134,14 @@ export class UserQuerier extends Querier {
     }
 
     public getUsername(id: number): string {
-        let SQL: string = "SELECT Username FROM \"User\" WHERE UserID = $1";
+        let SQL: string = "SELECT \"Username\" FROM \"User\" WHERE \"UserID\" = $1";
         let username: string = null;
         try {
             this.connection.query(SQL, [id], function(err, res) {
-                if (err) throw err;
+                if (err) {
+                    console.log(err);
+                    return;
+                }
 
                 if (res.rowCount > 0)
                     username = res.rows[0].Username;
@@ -140,11 +153,14 @@ export class UserQuerier extends Querier {
     }
 
     public getRoleID(id: number): number {
-        let SQL: string = "SELECT RoleID FROM \"User\" WHERE UserID = $1";
+        let SQL: string = "SELECT \"RoleID\" FROM \"User\" WHERE \"UserID\" = $1";
         let roleID: number = 0;
         try {
             this.connection.query(SQL, [id], function(err, res) {
-                if (err) throw err;
+                if (err) {
+                    console.log(err);
+                    return;
+                }
 
                 if (res.rowCount > 0)
                     roleID = res.rows[0].RoleID;

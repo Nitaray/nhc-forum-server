@@ -25,7 +25,10 @@ export class DatabaseConnectionManager {
             });
 
             this.connection.connect(function(err): void {
-                if (err) throw err;
+                if (err) {
+                    console.log(err);
+                    return;
+                }
                 console.log("Connected!");
             });
 
@@ -46,7 +49,10 @@ export class DatabaseConnectionManager {
     public static closeConnection(): void {
         try {
             this.connection.end(function(err) {
-                if (err) throw err;
+                if (err) {
+                    console.log(err);
+                    return;
+                }
                 console.log('Connection closed!');
             });
             this.connection = null;

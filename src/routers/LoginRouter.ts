@@ -17,10 +17,10 @@ class LoginRouter {
 
     private _configure() {
         this._router.post('/', (req: Request, res: Response, next: NextFunction) => {
-            let password: string = req.body.Password;
-            let username: string = req.body.Username;
+            let password: string = req.query.Password as string;
+            let username: string = req.query.Username as string;
 
-            let ck_pwd: boolean = UserAuthenticator.auth(username, password);
+            let ck_pwd: boolean = UserAuthenticator.auth(username, password + username);
 
             if (ck_pwd) {
                 let userQuerier = new UserQuerier(DatabaseConnectionManager.getConnection());

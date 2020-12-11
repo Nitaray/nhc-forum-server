@@ -2,7 +2,7 @@ import * as pg from 'pg';
 import {StringValuePair} from '../../types/StringValuePair';
 
 export class Modifier {
-    protected fields: Map<string, number>;
+    protected fields: Map<string, number> = new Map<string, number>();
 
     protected connection: pg.Client;
 
@@ -19,19 +19,22 @@ export class Modifier {
     protected queryExecution(queryStr: string, paramsValues: any[]): void {
         // Begin transaction
         this.connection.query("BEGIN", (err) => {
-            if (err) throw err;
+            if (err) {
+                console.log(err);
+                return;
+            }
             
             this.connection.query(queryStr, paramsValues, (err, results) => {
                 if (err) {
                     return this.connection.query("ROLLBACK", () => {
-                        throw err;
+                        console.log(err);
                     });
                 }
                 
                 this.connection.query("COMMIT", (err) => {
                     if (err) {
                         return this.connection.query("ROLLBACK", function() {
-                            throw err;
+                            console.log(err);
                         });
                     }
 

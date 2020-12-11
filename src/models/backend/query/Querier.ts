@@ -14,14 +14,21 @@ export abstract class Querier {
             let relations: Array<ForumRelation> = null;
 
             this.connection.query(this.querySQL, [id], (err, res) => {
-                if (err) throw err;
+                if (err) {
+                    console.log(err);
+                    return;
+                }
 
                 relations = this.prepareRelations(res);
 
-                if (relations.length != 1)
-                    throw new Error("ID does not exist or there are duplicate IDs.");
+                if (relations.length != 1) {
+                    console.log(new Error("ID does not exist or there are duplicate IDs."));
+                    return;
+                }
             });
 
+            if (relations.length == 0)
+                return null;
             return relations.shift();
         } catch (e) {
             console.log(e);

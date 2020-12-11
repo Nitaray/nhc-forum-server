@@ -6,7 +6,7 @@ import MasterRouter from './routers/MasterRouter';
 // Instruction to make server be able to receive requests from clients 
 let app = express();
 app.use(bodyParser.urlencoded({
-    extended: false
+    extended: true
 }));
 app.use(bodyParser.json());
 
@@ -28,6 +28,13 @@ let masterRouter = MasterRouter;
 let server: Server = new Server();
 
 server.app.use('/', masterRouter);
+
+let regDateObj = new Date(Date.now());
+
+let regDate: string = regDateObj.getUTCFullYear() + '-' +
+                ('00' + (regDateObj.getUTCMonth()+1)).slice(-2) + '-' +
+                ('00' + regDateObj.getUTCDate()).slice(-2) + ' 00:00:00';
+console.log(regDate);
 
 // Make the server listen on the port specified in the .env file
 ((port = process.env.PORT || 3000) => {

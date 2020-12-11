@@ -7,16 +7,19 @@ export class UserAuthenticator {
     public static auth(username: string, password: string): boolean {
         let authentication: boolean = false;
         try {
-            let sqlQuery: string = "SELECT Password FROM \"User\" WHERE Username = $1";
+            let sqlQuery: string = "SELECT \"Password\" FROM \"User\" WHERE \"Username\" = $1";
 
             this.connection.query(sqlQuery, [username], function(err, results) {
-                if (err) throw err;
+                if (err) {
+                    console.log(err);
+                    return;
+                }
                 
                 if (results.rows[0] != null) {
                     let correctHashedPassword: string = results.rows[0].Password;
                     let hashedPassword: string = AuthUtil.hashString(password);
 
-                    console.log("Password: " + correctHashedPassword + "\nEntered: " + hashedPassword);
+                    console.log("\"Password\": " + correctHashedPassword + "\nEntered: " + hashedPassword);
 
                     if (correctHashedPassword == hashedPassword)
                         authentication = true;

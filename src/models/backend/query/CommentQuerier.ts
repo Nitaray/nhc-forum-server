@@ -7,7 +7,7 @@ export class CommentQuerier extends Querier {
     constructor(connection: pg.Client) {
         super(connection);
 
-        this.querySQL = "SELECT * FROM \"Comment\" WHERE CommentID = $1";
+        this.querySQL = "SELECT * FROM \"Comment\" WHERE \"CommentID\" = $1";
     }
 
     protected prepareRelations(res: pg.QueryResult): Array<ForumRelation> {
@@ -42,12 +42,15 @@ export class CommentQuerier extends Querier {
     }
 
     public getCommentIDsByThreadID(containingThreadID: number): Array<number> {
-        let SQL: string = "SELECT CommentID FROM Comment WHERE ContainingThreadID = $1";
+        let SQL: string = "SELECT \"CommentID\" FROM Comment WHERE \"ContainingThreadID\" = $1";
         try {
             let ids: Array<number> = new Array<number>();
 
             this.connection.query(SQL, [containingThreadID], function(err, res) {
-                if (err) throw err;
+                if (err) {
+                    console.log(err);
+                    return;
+                }
 
                 for (let i = 0; i < res.rowCount; ++i) {
                     ids.push(res.rows[i].CommentID);

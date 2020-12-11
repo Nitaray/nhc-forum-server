@@ -6,15 +6,15 @@ export class NotificationModifier extends Modifier {
     constructor(connection: pg.Client) {
         super(connection);
 
-        this.fields.set("DateSent", 1);
-        this.fields.set("Content", 2);
-        this.fields.set("NotificationTitle", 3);
+        this.fields.set("\"DateSent\"", 1);
+        this.fields.set("\"Content\"", 2);
+        this.fields.set("\"NotificationTitle\"", 3);
 
         this.param_size = 3;
 
-        this.addSQL = "INSERT INTO \"Notification\" (DateSent, Content, NotificationTitle) VALUES ($1, $2, $3)";
+        this.addSQL = "INSERT INTO \"Notification\" (\"DateSent\", \"Content\", \"NotificationTitle\") VALUES ($1, $2, $3)";
         
-        this.removeSQL = "DELETE FROM \"Notification\" WHERE NotificationID = $1";
+        this.removeSQL = "DELETE FROM \"Notification\" WHERE \"NotificationID\" = $1";
     }
 
     public update(ID: number, values: Array<StringValuePair>): boolean {
@@ -23,7 +23,7 @@ export class NotificationModifier extends Modifier {
     }
 
     public updateContent(ID: number, newContent: string): boolean {
-        let sqlQuery: string = "UPDATE \"Notification\" SET Content = $1 WHERE NotificationID = $2";
+        let sqlQuery: string = "UPDATE \"Notification\" SET \"Content\" = $1 WHERE \"NotificationID\" = $2";
         return this.updateOneFieldOfID(ID, newContent, sqlQuery);
     }
 }
