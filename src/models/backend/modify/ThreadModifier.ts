@@ -24,7 +24,7 @@ export class ThreadModifier extends Modifier {
     }
 
     public updateThreadTitle(threadID: number, newThreadTitle: string): boolean {
-        let sqlQuery: string = "UPDATE \"Thread\" SET \"ThreadTitle\" = $1 WHERE TheadID = $2";
+        let sqlQuery: string = "UPDATE \"Thread\" SET \"ThreadTitle\" = $1 WHERE \"ThreadID\" = $2";
         return this.updateOneFieldOfID(threadID, newThreadTitle, sqlQuery);
     }
 
