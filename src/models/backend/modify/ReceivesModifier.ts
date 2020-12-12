@@ -3,7 +3,7 @@ import {StringValuePair} from '../../types/StringValuePair';
 import * as pg from 'pg';
 
 export class ReceivesModifier extends Modifier {
-    public constructor(connection: pg.Client) {
+    public constructor(connection: pg.Pool) {
         super(connection);
 
         this.fields.set("\"UserID\"", 1);

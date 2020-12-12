@@ -7,6 +7,8 @@ import { CommentQuerier } from '../models/backend/query/CommentQuerier';
 import { Thread } from '../models/backend/component/Thread';
 import { ThreadModifier } from '../models/backend/modify/ThreadModifier';
 import { StringValuePair } from '../models/types/StringValuePair';
+import * as bodyParser from 'body-parser';
+import { TokenManager } from '../models/backend/auth/TokenManager';
 
 class ThreadRouter {
     private _router = express.Router();
@@ -24,68 +26,108 @@ class ThreadRouter {
             let threadID: number = +req.query.ThreadID;
 
             let threadQuerier = new ThreadQuerier(DatabaseConnectionManager.getConnection());
-            let threadData = threadQuerier.getThreadByID(threadID);
-
-            if (threadData == null) {
-                res.status(404).send("Not found!");
-                return;
-            }
-
-            let userQuerier = new UserQuerier(DatabaseConnectionManager.getConnection());
-            let authorUsername = userQuerier.getUsername(threadData.getCreatorID());
-        
-            let commentQuerier = new CommentQuerier(DatabaseConnectionManager.getConnection());
-            let commentIDs = commentQuerier.getCommentIDsByThreadID(threadID);
-        
-            res.status(200).json({
-                AuthorID: threadData.getCreatorID(),
-                AuthorUsername: authorUsername,
-                Title: threadData.getTitle(),
-                Content: threadData.getContent(),
-                CreationDate: threadData.getDateCreated(),
-                CommentIDs: commentIDs
+            threadQuerier.getThreadByID(threadID).then((threadData) => {
+                if (threadData == null) {
+                    res.status(404).send("Not found!");
+                    return;
+                }
+    
+                let userQuerier = new UserQuerier(DatabaseConnectionManager.getConnection());
+                userQuerier.getUsername(threadData.getCreatorID()).then((authorUsername) => {
+                    let commentQuerier = new CommentQuerier(DatabaseConnectionManager.getConnection());
+                    commentQuerier.getCommentIDsByThreadID(threadID).then((commentIDs) => {
+                        res.status(200).json({
+                            AuthorID: threadData.getCreatorID(),
+                            AuthorUsername: authorUsername,
+                            Title: threadData.getTitle(),
+                            Content: threadData.getContent(),
+                            CreationDate: threadData.getDateCreated(),
+                            CommentIDs: commentIDs
+                        });
+                    });
+                });
             });
         });
 
-        this._router.post('/createThread', (req: Request, res: Response, next: NextFunction) => {            
+        this._router.post('/createThread', bodyParser.json(), (req: Request, res: Response, next: NextFunction) => {             
             var title: string = req.body.ThreadTitle as string;
             var content: string = req.body.Content as string;
-            var dateCreatedObj: Date = new Date(Date.now());
+            let userID: number = +req.body.CreatorID;
+            let userToken: string = req.body.UserToken;
+            let dateCreatedObj: Date = new Date(Date.now());
 
             let dateCreated: string = dateCreatedObj.getUTCFullYear() + '-' +
                                     ('00' + (dateCreatedObj.getUTCMonth()+1)).slice(-2) + '-' +
                                     ('00' + dateCreatedObj.getUTCDate()).slice(-2) + ' 00:00:00';
 
-            let threadModifier: ThreadModifier = new ThreadModifier(DatabaseConnectionManager.getConnection());
-            threadModifier.add([
-                {key: "\"ThreadTitle\"", value: title},
-                {key: "\"Content\"", value: content},
-                {key: "\"DateCreated\"", value: dateCreated},
-            ]);
+            if (!TokenManager.checkToken(userID.toString(), userToken)) {
+                res.status(404).send("Token not found!");
+            } else {
+                let threadModifier: ThreadModifier = new ThreadModifier(DatabaseConnectionManager.getConnection());
+                threadModifier.add([
+                    {key: "\"CreatorID\"", value: userID},
+                    {key: "\"ThreadTitle\"", value: title},
+                    {key: "\"Content\"", value: content},
+                    {key: "\"DateCreated\"", value: dateCreated},
+                ]);
+                res.status(200).send("Executed!");
+            }
         });
 
-        this._router.post('/updateThreadContent', (req: Request, res: Response, next: NextFunction) => {
-            var content: string = req.body.Content as string;
-            var threadID: number = +req.body.ThreadID;
+        this._router.post('/updateThreadContent', bodyParser.json(), (req: Request, res: Response, next: NextFunction) => {
+            let content: string = req.body.Content as string;
+            let threadID: number = +req.body.ThreadID;
+            let userID: string = req.body.CreatorID;
+            let userToken: string = req.body.UserToken;
 
-            let threadModifier: ThreadModifier = new ThreadModifier(DatabaseConnectionManager.getConnection());
-            threadModifier.updateContent(threadID, content);
+            if (TokenManager.checkToken(userID, userToken)) {
+                let threadModifier: ThreadModifier = new ThreadModifier(DatabaseConnectionManager.getConnection());
+                threadModifier.updateContent(threadID, content);
+                res.status(200).send("Executed!");
+            } else {
+                res.status(404).send("Token not found!")
+            }
         });
 
-        this._router.post('/updateThreadTitle', (req: Request, res: Response, next: NextFunction) => {
-            var title: string = req.body.ThreadTitle as string;
-            var threadID: number = +req.body.ThreadID;
+        this._router.post('/updateThreadTitle', bodyParser.json(), (req: Request, res: Response, next: NextFunction) => {
+            let title: string = req.body.ThreadTitle as string;
+            let threadID: number = +req.body.ThreadID;
+            let userID: string = req.body.CreatorID;
+            let userToken: string = req.body.UserToken;
 
-            let threadModifier: ThreadModifier = new ThreadModifier(DatabaseConnectionManager.getConnection());
-            threadModifier.updateThreadTitle(threadID, title);
+            if (TokenManager.checkToken(userID, userToken)) {
+                let threadModifier: ThreadModifier = new ThreadModifier(DatabaseConnectionManager.getConnection());
+                threadModifier.updateThreadTitle(threadID, title);
+                res.status(200).send("Executed!");
+            } else {
+                res.status(404).send("Token not found!");
+            }
         });
 
-        this._router.post('/updateThreadCreator', (req: Request, res: Response, next: NextFunction) => {
-            var creatorID: number = +req.body.CreatorID;
-            var threadID: number = +req.body.ThreadID;
+        this._router.post('/deleteThread', bodyParser.json(), (req: Request, res: Response, next: NextFunction) => {
+            let threadID: number = +req.body.ThreadID;
+            let creatorID: string = req.body.CreatorID;
+            let deletorID: string = req.body.DeletorID;
+            let deletorToken: string = req.body.DeletorToken;
 
-            let threadModifier: ThreadModifier = new ThreadModifier(DatabaseConnectionManager.getConnection());
-            threadModifier.updateCreatorID(threadID, creatorID);
+            let userQuerier: UserQuerier = new UserQuerier(DatabaseConnectionManager.getConnection());
+            userQuerier.getRoleID(+deletorID).then((roleID) => {
+                if (deletorID != creatorID) {
+                    if (roleID == 3) {
+                        res.status(404).send("Not found!");
+                        return;
+                    }
+                }
+
+                //either the editorID == creatorID or roleID of editorID is 1 or 2 (Admin or Mod)
+                if (!TokenManager.checkToken(deletorID, deletorToken)) {
+                    res.status(404).send("Not found!");
+                } else {
+                    let threadModifier: ThreadModifier = new ThreadModifier(DatabaseConnectionManager.getConnection());
+                    threadModifier.remove(threadID);
+                    res.status(200).send("Executed!");
+                }
+            });
         });
     }
 }

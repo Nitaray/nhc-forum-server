@@ -4,7 +4,7 @@ import { ForumRelation } from "../component/ForumRelation";
 import { Thread } from '../component/Thread';
 
 export class ThreadQuerier extends Querier {
-    constructor(connection: pg.Client) {
+    constructor(connection: pg.Pool) {
         super(connection);
 
         this.querySQL = 'SELECT * FROM \"Thread\" WHERE \"ThreadID\" = $1';
@@ -36,24 +36,21 @@ export class ThreadQuerier extends Querier {
         return relations;
     }
 
-    public getThreadByID(id: number): Thread {
-        return this.getByID(id) as Thread;
+    public async getThreadByID(id: number): Promise<Thread> {
+        let fres: Thread = null;
+        await this.getByID(id).then(res => fres = res as Thread);
+        return fres;
     }
 
-    public getRecentThreadsID(): Array<number> {
+    public async getRecentThreadsID(): Promise<Array<number>> {
         let SQL: string = "SELECT TOP 100 \"ThreadID\" FROM \"Thread\" ORDER BY \"DateCreated\" DESC";
         try {
             let ids: Array<number> = new Array<number>()
-            this.connection.query(SQL, function(err, res) {
-                if (err) {
-                    console.log(err);
-                    return;
-                }
-
+            await this.connection.query(SQL).then((res) => {
                 for (let i = 0; i < res.rowCount; ++i) {
                     ids.push(res.rows[i].ThreadID);
                 }
-            });
+            }).catch((err) => console.log(err));
 
             return ids;
         } catch (e) {
@@ -66,14 +63,7 @@ export class ThreadQuerier extends Querier {
         let SQL: string = "SELECT \"ThreadTitle\" FROM Thread WHERE \"ThreadID\" = $1";
         try {
             let title: string = "";
-            this.connection.query(SQL, [ID], function(err, res) {
-                if (err) {
-                    console.log(err);
-                    return;
-                }
-
-                title = res.rows[0].ThreadTitle;
-            });
+            this.connection.query(SQL, [ID]).then((res) => title = res.rows[0].ThreadTitle).catch((err) => console.log(err));
 
             return title;
         } catch (e) {
@@ -90,16 +80,11 @@ export class ThreadQuerier extends Querier {
         try {
             let ids: Array<number> = new Array<number>();
             
-            this.connection.query(SQL, function(err, res) {
-                if (err) {
-                    console.log(err);
-                    return;
-                }
-
+            this.connection.query(SQL).then((res) => {
                 for (let i = 0; i < res.rowCount; ++i) {
                     ids.push(res.rows[i].ThreadID);
                 }
-            });
+            }).catch((err) => console.log(err));
 
             return ids;
         } catch (e) {
@@ -108,7 +93,7 @@ export class ThreadQuerier extends Querier {
         return null;
     }
 
-    public getHotThreadsID(): Array<number> {
+    public async getHotThreadsID(): Promise<Array<number>> {
         let SQL: string = "SELECT TOP 100 Thread.\"ThreadID\" FROM Thread " +
                         "JOIN Comment C on Thread.\"ThreadID\" = C.\"ThreadID\" " +
                         "WHERE DATEDIFF(day, C.\"DateCreated\", GETDATE()) <= 30 " +
@@ -117,16 +102,11 @@ export class ThreadQuerier extends Querier {
         try {
             let ids: Array<number> = new Array<number>();
 
-            this.connection.query(SQL, function(err, res) {
-                if (err) {
-                    console.log(err);
-                    return;
-                }
-
+            await this.connection.query(SQL).then((res) => {
                 for (let i = 0; i < res.rowCount; ++i) {
                     ids.push(res.rows[i].ThreadID);
                 }
-            });
+            }).catch((err) => console.log(err));
 
             return ids;
         } catch (e) {
@@ -135,7 +115,7 @@ export class ThreadQuerier extends Querier {
         return null;
     }
 
-    public getFollowedThreadsID(creatorID: number): Array<number> {
+    public async getFollowedThreadsID(creatorID: number): Promise<Array<number>> {
         let SQL: string = "SELECT Thread.\"ThreadID\" FROM Thread " +
                         "JOIN Follows F on Thread.\"ThreadID\" = F.\"ThreadID\" " +
                         "WHERE F.\"CreatorID\" = $1 " +
@@ -143,16 +123,11 @@ export class ThreadQuerier extends Querier {
         try {
             let ids: Array<number> = new Array<number>();
 
-            this.connection.query(SQL, [creatorID], function(err, res) {
-                if (err) {
-                    console.log(err);
-                    return;
-                }
-
+            await this.connection.query(SQL, [creatorID]).then((res) => {
                 for (let i = 0; i < res.rowCount; ++i) {
-                    ids.push(res.rows[i].ThreadID);
+                        ids.push(res.rows[i].ThreadID);
                 }
-            });
+            }).catch(err => console.log(err));
 
             return ids;
         } catch (e) {
@@ -170,14 +145,7 @@ export class ThreadQuerier extends Querier {
 
         try {
             let id: number = 0;
-            this.connection.query(SQL, [creatorID, date, date], function(err, res) {
-                if (err) {
-                    console.log(err);
-                    return;
-                }
-
-                id = res.rows[0].ThreadID;
-            })
+            this.connection.query(SQL, [creatorID, date, date]).then((res) => id = res.rows[0].ThreadID).catch(err => console.log(err));
 
             return id;
         } catch (e) {

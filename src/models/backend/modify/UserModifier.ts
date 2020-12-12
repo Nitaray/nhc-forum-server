@@ -2,7 +2,7 @@ import {Modifier} from './Modifier';
 import * as pg from 'pg';
 
 export class UserModifier extends Modifier {
-    public constructor(connection: pg.Client) {
+    public constructor(connection: pg.Pool) {
         super(connection);
 
         this.fields.set("\"Username\"", 1);

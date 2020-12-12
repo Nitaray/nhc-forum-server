@@ -4,7 +4,7 @@ import {StringValuePair} from '../../types/StringValuePair';
 export class Modifier {
     protected fields: Map<string, number> = new Map<string, number>();
 
-    protected connection: pg.Client;
+    protected connection: pg.Pool;
 
     protected addSQL: string;
     protected removeSQL: string;
@@ -12,49 +12,30 @@ export class Modifier {
 
     protected param_size: number = 0;
 
-    constructor(connection: pg.Client) {
+    constructor(connection: pg.Pool) {
         this.connection = connection;
     }
 
-    protected queryExecution(queryStr: string, paramsValues: any[]): void {
+    protected async queryExecution(queryStr: string, paramsValues: any[]): Promise<void> {
         // Begin transaction
-        this.connection.query("BEGIN", (err) => {
-            if (err) {
-                console.log(err);
-                return;
-            }
-            
-            this.connection.query(queryStr, paramsValues, (err, results) => {
-                if (err) {
-                    return this.connection.query("ROLLBACK", () => {
-                        console.log(err);
-                    });
-                }
-                
-                this.connection.query("COMMIT", (err) => {
-                    if (err) {
-                        return this.connection.query("ROLLBACK", function() {
-                            console.log(err);
-                        });
-                    }
-
+        await this.connection.query("BEGIN").then((res) => {
+            this.connection.query(queryStr, paramsValues).then((results) => {                
+                this.connection.query("COMMIT").then((res2) => {
                     console.log(results.rowCount + ' record(s) changed!');
+                }).catch((err) => {
+                    console.log(err);
+                    this.connection.query("ROLLBACK");
                 });
+            }).catch((err) => {
+                console.log(err);
+                this.connection.query("ROLLBACK");
             });
-        });
+        }).catch((err) => console.log(err));
     }
 
-    public add(values: Array<StringValuePair>): boolean {
-        try {
-            let queryValues: any[] = this.setParams(values);
-            this.queryExecution(this.addSQL, queryValues);
-            return true;
-        } catch (e) {
-            console.log('Insertion failed!');
-            console.log(e);
-        }
-
-        return false;
+    public add(values: Array<StringValuePair>): void {
+        let queryValues: any[] = this.setParams(values);
+        this.queryExecution(this.addSQL, queryValues);
     }
 
     public update(ID: number, values: Array<StringValuePair>): boolean {
@@ -71,16 +52,8 @@ export class Modifier {
         return false;
     }
 
-    public remove(ID: number): boolean {
-        try {
-            this.queryExecution(this.removeSQL, [ID]);
-            return true;
-        } catch (e) {
-            console.log('Error deletion.');
-            console.log(e);
-        }
-
-        return false;
+    public remove(ID: number): void {
+        this.queryExecution(this.removeSQL, [ID]);
     }
 
     protected setParams(values: Array<StringValuePair>): any[] {
@@ -113,14 +86,7 @@ export class Modifier {
      * Performs any update operations that change only one column
      * of only one instance with the provided ID.
      */
-    protected updateOneFieldOfID(ID: number, value: any, sqlQuery: string): boolean {
-        try {
-            this.queryExecution(sqlQuery, [value, ID]);
-            return true;
-        } catch (e) {
-            console.log(e);
-        }
-        
-        return false;
+    protected updateOneFieldOfID(ID: number, value: any, sqlQuery: string): void {
+        this.queryExecution(sqlQuery, [value, ID]);
     }
 }

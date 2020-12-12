@@ -4,7 +4,7 @@ import { Querier } from './Querier';
 import * as pg from 'pg';
 
 export class CommentQuerier extends Querier {
-    constructor(connection: pg.Client) {
+    constructor(connection: pg.Pool) {
         super(connection);
 
         this.querySQL = "SELECT * FROM \"Comment\" WHERE \"CommentID\" = $1";
@@ -37,25 +37,22 @@ export class CommentQuerier extends Querier {
         return null;
     }
 
-    public getCommentByID(id: number): Comment {
-        return this.getByID(id) as Comment;
+    public async getCommentByID(id: number): Promise<Comment> {
+        let fres: Comment = null;
+        await this.getByID(id).then((res) => fres = res as Comment);
+        return fres;
     }
 
-    public getCommentIDsByThreadID(containingThreadID: number): Array<number> {
-        let SQL: string = "SELECT \"CommentID\" FROM Comment WHERE \"ContainingThreadID\" = $1";
+    public async getCommentIDsByThreadID(containingThreadID: number): Promise<Array<number>> {
+        let SQL: string = "SELECT \"CommentID\" FROM \"Comment\" WHERE \"ContainingThreadID\" = $1";
         try {
             let ids: Array<number> = new Array<number>();
 
-            this.connection.query(SQL, [containingThreadID], function(err, res) {
-                if (err) {
-                    console.log(err);
-                    return;
-                }
-
+            await this.connection.query(SQL, [containingThreadID]).then((res) => {
                 for (let i = 0; i < res.rowCount; ++i) {
                     ids.push(res.rows[i].CommentID);
                 }
-            });
+            }).catch(err => console.log(err));
 
             return ids;
         } catch (e) {

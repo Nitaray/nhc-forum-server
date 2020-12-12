@@ -17,9 +17,7 @@ class HotThreadsRouter {
     private _configure() {
         this._router.get('/', (req: Request, res: Response, next: NextFunction) => {
             let threadQuerier = new ThreadQuerier(DatabaseConnectionManager.getConnection());
-            let hotThreadIDs = threadQuerier.getHotThreadsID();
-
-            res.status(200).send(hotThreadIDs);
+            threadQuerier.getHotThreadsID().then(hotThreadIDs => res.status(200).send({"IDs": hotThreadIDs}));
         });
     }
 }

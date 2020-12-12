@@ -17,9 +17,7 @@ class NewThreadsRouter {
     private _configure() {
         this._router.get('/', (req: Request, res: Response, next: NextFunction) => {
             let threadQuerier = new ThreadQuerier(DatabaseConnectionManager.getConnection());
-            let recentThreadIDs = threadQuerier.getRecentThreadsID();
-
-            res.status(200).send(recentThreadIDs);
+            threadQuerier.getRecentThreadsID().then(recentThreadIDs => res.status(200).send({ "IDs": recentThreadIDs }));
         });
     }
 }

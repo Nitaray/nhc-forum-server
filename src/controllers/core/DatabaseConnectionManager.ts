@@ -11,11 +11,11 @@ export class DatabaseConnectionManager {
     private static username: string = process.env.DB_USER;
     private static password: string = process.env.DB_PASS;
     private static dbName: string = process.env.DB_NAME;
-    private static connection: pg.Client = null;
+    private static connection: pg.Pool = null;
 
-    private static createConnection(): pg.Client {
+    private static createConnection(): pg.Pool {
         try {
-            this.connection = new pg.Client({
+            this.connection = new pg.Pool({
                 host: this.url,
                 user: this.username,
                 password: this.password,
@@ -39,7 +39,7 @@ export class DatabaseConnectionManager {
         }
     }
 
-    public static getConnection(): pg.Client {
+    public static getConnection(): pg.Pool {
         if (this.connection == null)
             this.connection = this.createConnection();
         
@@ -48,13 +48,7 @@ export class DatabaseConnectionManager {
 
     public static closeConnection(): void {
         try {
-            this.connection.end(function(err) {
-                if (err) {
-                    console.log(err);
-                    return;
-                }
-                console.log('Connection closed!');
-            });
+            this.connection.end().then(() => console.log('Pool ended!'));
             this.connection = null;
         } catch (e) {
             console.log('Failed to close connection.');

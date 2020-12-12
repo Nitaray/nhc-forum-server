@@ -3,7 +3,7 @@ import {Modifier} from './Modifier';
 import {StringValuePair} from '../../types/StringValuePair';
 
 export class FollowModifier extends Modifier {
-    constructor(connection: pg.Client) {
+    constructor(connection: pg.Pool) {
         super(connection);
 
         this.fields.set("\"UserID\"", 1);

@@ -3,7 +3,7 @@ import {Modifier} from './Modifier';
 import {StringValuePair} from '../../types/StringValuePair';
 
 export class CommentModifier extends Modifier {
-    constructor(connection: pg.Client) {
+    constructor(connection: pg.Pool) {
         super(connection);
 
         this.fields.set("\"CreatorID\"", 1);
@@ -24,7 +24,7 @@ export class CommentModifier extends Modifier {
         return false;
     }
 
-    public updateContent(ID: number, newContent: string): boolean {
+    public updateContent(ID: number, newContent: string): void {
         let sqlQuery: string = "UPDATE \"Comment\" SET \"Content\" = $1 WHERE \"CommentID\" = $2";
         return this.updateOneFieldOfID(ID, newContent, sqlQuery);
     }

@@ -3,6 +3,8 @@ import { NextFunction, Request, Response } from 'express';
 import { DatabaseConnectionManager } from '../controllers/core/DatabaseConnectionManager';
 import { UserAuthenticator } from '../models/backend/auth/UserAuthenticator';
 import { UserQuerier } from '../models/backend/query/UserQuerier';
+import * as bodyParser from 'body-parser';
+import { TokenManager } from '../models/backend/auth/TokenManager';
 
 class LoginRouter {
     private _router = express.Router();
@@ -16,19 +18,28 @@ class LoginRouter {
     }
 
     private _configure() {
-        this._router.post('/', (req: Request, res: Response, next: NextFunction) => {
+        this._router.post('/', bodyParser.json(), (req: Request, res: Response, next: NextFunction) => {
             let password: string = req.body.Password as string;
             let username: string = req.body.Username as string;
 
-            let ck_pwd: boolean = UserAuthenticator.auth(username, password + username);
+            UserAuthenticator.auth(res, username, password + username).then((ck_pwd) => {
+                console.log(ck_pwd);
+                if (ck_pwd) {
+                    let userQuerier = new UserQuerier(DatabaseConnectionManager.getConnection());
+                    let userID: string = "0";
+                    userQuerier.getID(username).then((id) => {
+                        userID = id.toString();
 
-            if (ck_pwd) {
-                let userQuerier = new UserQuerier(DatabaseConnectionManager.getConnection());
-                let userID = userQuerier.getID(username).toString();
-                res.status(200).send("Auth OK\nUser ID: " + userID);
-            } else {
-                res.status(406).send("Auth ERROR, recheck username and password!");
-            }
+                        res.status(200).send({
+                            "UserID": userID,
+                            "UserToken": TokenManager.createNewToken(userID),
+                            "Status": "OK"
+                        });
+                    });
+                } else {
+                    res.status(406).send({"Status": "Error"});
+                }
+            });
         });
     }
 }

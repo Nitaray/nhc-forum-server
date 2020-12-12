@@ -4,7 +4,7 @@ import { Querier } from './Querier';
 import * as pg from 'pg';
 
 export class UserQuerier extends Querier {
-    constructor(connection: pg.Client) {
+    constructor(connection: pg.Pool) {
         super(connection);
 
         this.querySQL = "SELECT  * FROM \"User\" WHERE \"UserID\" = $1";
@@ -60,15 +60,10 @@ export class UserQuerier extends Querier {
         let SQL: string = "SELECT * FROM \"User\" WHERE \"Username\" = $1";
         let userExists: boolean = false;
         try {
-            this.connection.query(SQL, [username], function(err, res) {
-                if (err) {
-                    console.log(err);
-                    return;
-                }
-
+            this.connection.query(SQL, [username]).then((res) => {
                 if (res.rowCount > 0)
                     userExists = true;
-            });
+            }).catch((err) => console.log(err));
         } catch (e) {
             console.log(e);
         }
@@ -79,34 +74,25 @@ export class UserQuerier extends Querier {
         let SQL: string = "SELECT * FROM \"User\" WHERE \"Email\" = $1";
         let emailExists: boolean = false;
         try {
-            this.connection.query(SQL, [email], function(err, res) {
-                if (err) {
-                    console.log(err);
-                    return;
-                }
-
+            this.connection.query(SQL, [email]).then((res) => {
                 if (res.rowCount > 0)
                     emailExists = true;
-            });
+            }).catch(err => console.log(err));
         } catch (e) {
             console.log(e);
         }
         return emailExists;
     }
 
-    public getID(username: string): number {
+    public async getID(username: string): Promise<number> {
         let SQL: string = "SELECT \"UserID\" FROM \"User\" WHERE \"Username\" = $1";
         let userID: number = 0;
         try {
-            this.connection.query(SQL, [username], function(err, res) {
-                if (err) {
-                    console.log(err);
-                    return;
-                }
-
-                if (res.rowCount > 0)
+            await this.connection.query(SQL, [username]).then((res) => {
+                if (res.rowCount > 0) {
                     userID = res.rows[0].UserID;
-            });
+                }
+            }).catch(err => console.log(err));
         } catch (e) {
             console.log(e);
         }
@@ -118,53 +104,38 @@ export class UserQuerier extends Querier {
         let SQL: string = "SELECT \"RegistrationDate\" FROM \"User\" WHERE \"UserID\" = $1";
         let regDate: Date = null;
         try {
-            this.connection.query(SQL, [id], function(err, res) {
-                if (err) {
-                    console.log(err);
-                    return;
-                }
-
+            this.connection.query(SQL, [id]).then((res) => {
                 if (res.rowCount > 0)
                     regDate = res.rows[0].RegistrationDate;
-            });
+            }).catch(err => console.log(err));
         } catch (e) {
             console.log(e);
         }
         return regDate;
     }
 
-    public getUsername(id: number): string {
+    public async getUsername(id: number): Promise<string> {
         let SQL: string = "SELECT \"Username\" FROM \"User\" WHERE \"UserID\" = $1";
         let username: string = null;
         try {
-            this.connection.query(SQL, [id], function(err, res) {
-                if (err) {
-                    console.log(err);
-                    return;
-                }
-
+            await this.connection.query(SQL, [id]).then((res) => {
                 if (res.rowCount > 0)
                     username = res.rows[0].Username;
-            });
+            }).catch(err => console.log(err));
         } catch (e) {
             console.log(e);
         }
         return username;
     }
 
-    public getRoleID(id: number): number {
+    public async getRoleID(id: number): Promise<number> {
         let SQL: string = "SELECT \"RoleID\" FROM \"User\" WHERE \"UserID\" = $1";
         let roleID: number = 0;
         try {
-            this.connection.query(SQL, [id], function(err, res) {
-                if (err) {
-                    console.log(err);
-                    return;
-                }
-
+            await this.connection.query(SQL, [id]).then((res) => {
                 if (res.rowCount > 0)
                     roleID = res.rows[0].RoleID;
-            });
+            }).catch(err => console.log(err));
         } catch (e) {
             console.log(e);
         }

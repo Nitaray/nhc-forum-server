@@ -3,8 +3,7 @@ import { NextFunction, Request, Response } from 'express';
 import { DatabaseConnectionManager } from '../controllers/core/DatabaseConnectionManager';
 import { UserModifier } from '../models/backend/modify/UserModifier';
 import { AuthUtil } from '../models/backend/auth/AuthUtil';
-
-var bodyParser = require('body-parser')
+import * as bodyParser from 'body-parser';
 
 class RegisterRouter {
     private _router = express.Router();
@@ -21,7 +20,10 @@ class RegisterRouter {
         this._router.post('/', bodyParser.json(), (req: Request, res: Response, next: NextFunction) => {
             let username: string = req.body.Username as string;
             let email: string = req.body.Email as string;
-            let hashedPassword: string = AuthUtil.hashString((req.query.Password as string) + username);
+            let hashedPassword: string = AuthUtil.hashString((req.body.Password as string) + username);
+
+            // console.log(hashedPassword);
+            // console.log((req.body.Password as string) + username);
 
             let regDateObj = new Date(Date.now());
 
@@ -36,7 +38,7 @@ class RegisterRouter {
                 {key: "\"Email\"", value: email},
                 {key: "\"FirstName\"", value: "Cuong"},
                 {key: "\"LastName\"", value: "Nguyen"},
-                {key: "\"DateOfBirth\"", value: "01-01-1999"},
+                {key: "\"DateOfBirth\"", value: "1999-01-01"},
                 {key: "\"Status\"", value: "Active"},
                 {key: "\"RegistrationDate\"", value: regDate},
                 {key: "\"Gender\"", value: "Male"},
@@ -45,7 +47,7 @@ class RegisterRouter {
                 {key: "\"RoleID\"", value: 3},
             ]);
 
-            res.status(200).send("Registration OK!");
+            res.status(200).send("Registration executed!");
         });
     }
 }

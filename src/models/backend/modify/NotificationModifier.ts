@@ -3,7 +3,7 @@ import * as pg from 'pg';
 import {StringValuePair} from '../../types/StringValuePair';
 
 export class NotificationModifier extends Modifier {
-    constructor(connection: pg.Client) {
+    constructor(connection: pg.Pool) {
         super(connection);
 
         this.fields.set("\"DateSent\"", 1);
