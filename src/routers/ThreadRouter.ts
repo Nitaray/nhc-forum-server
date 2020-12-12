@@ -111,27 +111,32 @@ class ThreadRouter {
 
         this._router.post('/deleteThread', bodyParser.json(), (req: Request, res: Response, next: NextFunction) => {
             let threadID: number = +req.body.ThreadID;
-            let creatorID: string = req.body.CreatorID;
             let deletorID: string = req.body.DeletorID;
             let deletorToken: string = req.body.DeletorToken;
 
-            let userQuerier: UserQuerier = new UserQuerier(DatabaseConnectionManager.getConnection());
-            userQuerier.getRoleID(+deletorID).then((roleID) => {
-                if (deletorID != creatorID) {
-                    if (roleID == 3) {
-                        res.status(404).send("Not found!");
-                        return;
-                    }
-                }
-
-                //either the editorID == creatorID or roleID of editorID is 1 or 2 (Admin or Mod)
-                if (!TokenManager.checkToken(deletorID, deletorToken)) {
-                    res.status(404).send("Not found!");
-                } else {
-                    let threadModifier: ThreadModifier = new ThreadModifier(DatabaseConnectionManager.getConnection());
-                    threadModifier.remove(threadID);
-                    res.status(200).send("Executed!");
-                }
+            let threadQuerier: ThreadQuerier = new ThreadQuerier(DatabaseConnectionManager.getConnection());
+            threadQuerier.getThreadByID(threadID).then((qres) => {
+                let creatorID = qres.getCreatorID().toString();
+                let userQuerier: UserQuerier = new UserQuerier(DatabaseConnectionManager.getConnection());
+                userQuerier.getRoleID(+deletorID).then((deletorRoleID) => {
+                    userQuerier.getRoleID(+creatorID).then((creatorRoleID) => {
+                        if (deletorID != creatorID) {
+                            if (+deletorRoleID >= +creatorRoleID) {
+                                res.status(403).send("Forbidden!");
+                                return;
+                            }
+                        }
+    
+                        //either the editorID == creatorID or roleID of editorID is 1 or 2 (Admin or Mod)
+                        if (!TokenManager.checkToken(deletorID, deletorToken)) {
+                            res.status(404).send("Not found!");
+                        } else {
+                            let threadModifier: ThreadModifier = new ThreadModifier(DatabaseConnectionManager.getConnection());
+                            threadModifier.remove(threadID);
+                            res.status(200).send("Executed!");
+                        }
+                    });
+                });
             });
         });
     }
