@@ -22,7 +22,7 @@ export class NotificationModifier extends Modifier {
         return false;
     }
 
-    public updateContent(ID: number, newContent: string): boolean {
+    public updateContent(ID: number, newContent: string): void {
         let sqlQuery: string = "UPDATE \"Notification\" SET \"Content\" = $1 WHERE \"NotificationID\" = $2";
         return this.updateOneFieldOfID(ID, newContent, sqlQuery);
     }

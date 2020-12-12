@@ -52,8 +52,10 @@ export class UserQuerier extends Querier {
         return relations;
     }
 
-    public getUserByID(id: number): User {
-        return this.getByID(id) as User;
+    public async getUserByID(id: number): Promise<User> {
+        let fuser: User = null;
+        await this.getByID(id).then(user => fuser = user as User);
+        return fuser;
     }
 
     public checkUsername(username: string): boolean {
