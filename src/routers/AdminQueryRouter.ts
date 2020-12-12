@@ -1,6 +1,6 @@
 import * as express from 'express';
 import * as pg from 'pg';
-import { DatabaseConnectionManager } from '../controllers/core/DatabaseConnectionManager';
+import { DatabaseConnectionManager } from '../models/backend/database/DatabaseConnectionManager';
 import * as bodyParser from 'body-parser';
 
 class AdminQueryRouter {
@@ -17,6 +17,11 @@ class AdminQueryRouter {
     private _configure() {
         this._router.get('/retrieveData', function(req, res) {
             let sqlQuery: string = req.query.sqlQuery as string;
+
+            if (sqlQuery == null) {
+                res.status(400).send("Bad request!");
+                return;
+            }
 
             let connection: pg.Pool = DatabaseConnectionManager.getConnection();
 
@@ -35,6 +40,11 @@ class AdminQueryRouter {
         this._router.post('/updateData', bodyParser.json(), function(req, res) {
             let sqlQuery: string = req.body.sqlQuery as string;
             // console.log(sqlQuery);
+
+            if (sqlQuery == null) {
+                res.status(400).send("Bad request!");
+                return;
+            }
 
             let connection: pg.Pool = DatabaseConnectionManager.getConnection();
 

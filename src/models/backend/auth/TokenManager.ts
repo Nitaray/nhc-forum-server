@@ -31,4 +31,14 @@ export class TokenManager {
 
         return false; //the control reaches here if user does not exists
     }
+
+    public static deleteUserTokenOfID(userID: string): boolean {
+        let idx = this.users.indexOf(userID);
+        if (idx > -1) {
+            this.users.splice(idx, 1);
+            this.timestamps.splice(idx, 1);
+            return true;
+        } else
+            return false;
+    }
 }

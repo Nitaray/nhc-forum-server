@@ -1,4 +1,4 @@
-import {DatabaseConnectionManager} from '../../../controllers/core/DatabaseConnectionManager';
+import {DatabaseConnectionManager} from '../database/DatabaseConnectionManager';
 import {AuthUtil} from './AuthUtil';
 import * as express from 'express';
 import { UserQuerier } from '../query/UserQuerier';

@@ -1,6 +1,6 @@
 import * as express from 'express';
 import { NextFunction, Request, Response } from 'express';
-import { DatabaseConnectionManager } from '../controllers/core/DatabaseConnectionManager';
+import { DatabaseConnectionManager } from '../models/backend/database/DatabaseConnectionManager';
 import { UserAuthenticator } from '../models/backend/auth/UserAuthenticator';
 import { UserQuerier } from '../models/backend/query/UserQuerier';
 import * as bodyParser from 'body-parser';
@@ -21,6 +21,11 @@ class LoginRouter {
         this._router.post('/', bodyParser.json(), (req: Request, res: Response, next: NextFunction) => {
             let password: string = req.body.Password as string;
             let username: string = req.body.Username as string;
+
+            if (password == null || username == null) {
+                res.status(400).send("Bad request!");
+                return;
+            }
 
             UserAuthenticator.auth(res, username, password + username).then((ck_pwd) => {
                 console.log(ck_pwd);

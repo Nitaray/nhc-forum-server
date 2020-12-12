@@ -3,7 +3,7 @@ import {Querier} from '../query/Querier';
 import {ThreadQuerier} from '../query/ThreadQuerier';
 import {ForumRelation} from './ForumRelation';
 import {StringValuePair} from '../../types/StringValuePair';
-import {DatabaseConnectionManager} from '../../../controllers/core/DatabaseConnectionManager';
+import {DatabaseConnectionManager} from '../database/DatabaseConnectionManager';
 
 export class Thread implements ForumRelation {
     private ID: number = 0;

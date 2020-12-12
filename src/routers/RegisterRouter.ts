@@ -1,6 +1,6 @@
 import * as express from 'express';
 import { NextFunction, Request, Response } from 'express';
-import { DatabaseConnectionManager } from '../controllers/core/DatabaseConnectionManager';
+import { DatabaseConnectionManager } from '../models/backend/database/DatabaseConnectionManager';
 import { UserModifier } from '../models/backend/modify/UserModifier';
 import { AuthUtil } from '../models/backend/auth/AuthUtil';
 import * as bodyParser from 'body-parser';
@@ -18,6 +18,11 @@ class RegisterRouter {
 
     private _configure() {
         this._router.post('/', bodyParser.json(), (req: Request, res: Response, next: NextFunction) => {
+            if (req.body.Username == null || req.body.Email == null || req.body.Password == null) {
+                res.status(400).send("Missing POST data!");
+                return;
+            }
+
             let username: string = req.body.Username as string;
             let email: string = req.body.Email as string;
             let hashedPassword: string = AuthUtil.hashString((req.body.Password as string) + username);

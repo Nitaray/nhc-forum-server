@@ -1,6 +1,6 @@
 import * as express from 'express';
 import { NextFunction, Request, Response } from 'express';
-import { DatabaseConnectionManager } from '../controllers/core/DatabaseConnectionManager';
+import { DatabaseConnectionManager } from '../models/backend/database/DatabaseConnectionManager';
 import { ThreadQuerier } from '../models/backend/query/ThreadQuerier';
 import { UserQuerier } from '../models/backend/query/UserQuerier';
 import { CommentQuerier } from '../models/backend/query/CommentQuerier';
@@ -55,6 +55,11 @@ class ThreadRouter {
             let userID: number = +req.body.CreatorID;
             let userToken: string = req.body.UserToken;
             let dateCreatedObj: Date = new Date(Date.now());
+
+            if (title == null || content == null || userID == null || userToken == null) {
+                res.status(400).send("Bad request!");
+                return;
+            }
 
             let dateCreated: string = dateCreatedObj.getUTCFullYear() + '-' +
                                     ('00' + (dateCreatedObj.getUTCMonth()+1)).slice(-2) + '-' +

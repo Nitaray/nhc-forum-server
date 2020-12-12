@@ -1,6 +1,6 @@
 import * as express from 'express';
 import { NextFunction, Request, Response } from 'express';
-import { DatabaseConnectionManager } from '../controllers/core/DatabaseConnectionManager';
+import { DatabaseConnectionManager } from '../models/backend/database/DatabaseConnectionManager';
 import { ThreadQuerier } from '../models/backend/query/ThreadQuerier';
 
 class HotThreadsRouter {

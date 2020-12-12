@@ -7,6 +7,7 @@ import { RegisterRouter } from './RegisterRouter';
 import { HotThreadsRouter } from './HotThreadsRouter';
 import { NewThreadsRouter } from './NewThreadsRouter';
 import { FollowedThreadsRouter } from './FollowedThreadsRouter';
+import { LogoutRouter } from './LogoutRouter';
 
 class MasterRouter {
     private _router = express.Router();
@@ -18,6 +19,7 @@ class MasterRouter {
     private _hotThreadsRouter = HotThreadsRouter;
     private _newThreadsRouter = NewThreadsRouter;
     private _followedThreadsRouter = FollowedThreadsRouter;
+    private _logoutRouter = LogoutRouter;
 
     get router() {
         return this._router;
@@ -39,6 +41,7 @@ class MasterRouter {
         this._router.use('/api/hotPosts', this._hotThreadsRouter);
         this._router.use('/api/newPosts', this._newThreadsRouter);
         this._router.use('/api/followedPosts', this._followedThreadsRouter);
+        this._router.use('/api/logout', this._logoutRouter);
     }
 }
 
