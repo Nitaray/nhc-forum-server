@@ -1,3 +1,4 @@
+import { timeStamp } from "console";
 import { AuthUtil } from "./AuthUtil";
 
 export class TokenManager {
@@ -19,26 +20,35 @@ export class TokenManager {
                 // user logged in, check token
                 let original_token = AuthUtil.hashString(userID + this.timestamps[i]);
 
-                console.log(original_token);
-                console.log(token);
+                console.log(token + "\n" + original_token);
 
                 if (original_token == token)
                     return true;
-                else
-                    return false;
             }
         }
 
-        return false; //the control reaches here if user does not exists
+        return false; //the control reaches here if user have not logged
     }
 
-    public static deleteUserTokenOfID(userID: string): boolean {
-        let idx = this.users.indexOf(userID);
+    public static deleteUserTokenOfID(userID: string, userToken: string): boolean {
+        let idx = -1;
+        for (let i = 0; i < this.users.length; ++i) {
+            if (this.users[i] == userID) {
+                let token = AuthUtil.hashString(userID + this.timestamps[i]);
+                if (token == userToken) {
+                    idx = i;
+                    break;
+                }
+            }
+        }
+
+        console.log(idx);
+
         if (idx > -1) {
-            this.users.splice(idx, 1);
-            this.timestamps.splice(idx, 1);
+            this.users = this.users.slice(idx, 1);
+            this.timestamps = this.timestamps.slice(idx, 1);
             return true;
-        } else
-            return false;
+        }
+        return false;
     }
 }

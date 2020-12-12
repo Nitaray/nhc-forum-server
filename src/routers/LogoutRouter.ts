@@ -19,7 +19,7 @@ class LogoutRouter {
 
     private _configure() {
         this._router.post('/', bodyParser.json(), (req: Request, res: Response, next: NextFunction) => {
-            let userID: string = req.body.userID as string;
+            let userID: string = req.body.UserID as string;
             let userToken: string = req.body.UserToken;
 
             if (userID == null || userToken == null) {
@@ -30,7 +30,7 @@ class LogoutRouter {
             if (!TokenManager.checkToken(userID, userToken)) {
                 res.status(400).send("User token not permitted!");
             } else {
-                let ret = TokenManager.deleteUserTokenOfID(userID);
+                let ret = TokenManager.deleteUserTokenOfID(userID, userToken);
                 if (ret) res.status(200).send("OK");
                 else res.status(400).send("Users have not logged in!");
             }
