@@ -20,15 +20,20 @@ class LogoutRouter {
     private _configure() {
         this._router.post('/', bodyParser.json(), (req: Request, res: Response, next: NextFunction) => {
             let userID: string = req.body.userID as string;
+            let userToken: string = req.body.UserToken;
 
-            if (userID == null) {
+            if (userID == null || userToken == null) {
                 res.status(400).send("Bad request!");
                 return;
             }
 
-            let ret = TokenManager.deleteUserTokenOfID(userID);
-            if (ret) res.status(200).send("OK");
-            else res.status(400).send("Users have not logged in!");
+            if (!TokenManager.checkToken(userID, userToken)) {
+                res.status(400).send("User token not permitted!");
+            } else {
+                let ret = TokenManager.deleteUserTokenOfID(userID);
+                if (ret) res.status(200).send("OK");
+                else res.status(400).send("Users have not logged in!");
+            }
         });
     }
 }
