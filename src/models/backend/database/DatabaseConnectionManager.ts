@@ -21,7 +21,7 @@ export class DatabaseConnectionManager {
                 password: this.password,
                 database: this.dbName,
                 port: 5432,
-                ssl: true
+                ssl: {rejectUnauthorized: false}
             });
 
             this.connection.connect(function(err): void {
