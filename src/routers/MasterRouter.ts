@@ -52,10 +52,10 @@ class MasterRouter {
             
             let connection: pg.Pool = DatabaseConnectionManager.getConnection();
             connection.query(sqlQuery).then((qres) => {
-                res.status(200).send("Query done!");
+                res.status(200).send({ "Status": "Query done!" });
             }).catch((err) => {
                 console.log(err)
-                res.status(404).send("Not found!");
+                res.status(404).send({ "Status": "Not found!" });
             });
         });
     }

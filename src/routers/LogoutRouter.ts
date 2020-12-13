@@ -23,16 +23,16 @@ class LogoutRouter {
             let userToken: string = req.body.UserToken;
 
             if (userID == null || userToken == null) {
-                res.status(400).send("Bad request!");
+                res.status(400).send({ "Status": "Bad request!" });
                 return;
             }
 
             if (!TokenManager.checkToken(userID, userToken)) {
-                res.status(400).send("User token not permitted!");
+                res.status(400).send({ "Status": "User token not permitted!" });
             } else {
                 let ret = TokenManager.deleteUserTokenOfID(userID, userToken);
-                if (ret) res.status(200).send("OK");
-                else res.status(400).send("Users have not logged in!");
+                if (ret) res.status(200).send({ "Status": "OK" });
+                else res.status(400).send({ "Status": "Users have not logged in!" });
             }
         });
     }

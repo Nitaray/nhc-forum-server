@@ -23,12 +23,12 @@ class FollowedThreadsRouter {
             let userToken: string = req.query.UserToken as string;
 
             if (userID == null || userToken == null) {
-                res.status(400).send("Bad request!");
+                res.status(400).send({ "Status": "Bad request!" });
                 return;
             }
 
             if (!TokenManager.checkToken(userID, userToken)) {
-                res.status(403).send("Forbidden");
+                res.status(403).send({ "Status": "Forbidden" });
             } else {
                 let threadQuerier = new ThreadQuerier(DatabaseConnectionManager.getConnection());
                 let followedThreadsIDs: Array<number> = null;
@@ -52,12 +52,12 @@ class FollowedThreadsRouter {
                                         ('00' + followDateObj.getUTCSeconds()).slice(-2);
             
             if (userID == null || userToken == null || threadID == undefined) {
-                res.status(400).send("Bad request!");
+                res.status(400).send({ "Status": "Forbidden" });
                 return;
             }
 
             if (!TokenManager.checkToken(userID, userToken)) {
-                res.status(404).send("Token not found!");
+                res.status(404).send({ "Status": "Token not found!" });
             } else {
                 let followModifier = new FollowModifier(DatabaseConnectionManager.getConnection());
                 followModifier.add([
@@ -65,7 +65,7 @@ class FollowedThreadsRouter {
                     {key: "ThreadID", value: +threadID},
                     {key: "FollowedSince", value: followDate},
                 ]);
-                res.status(200).send("Executed!");
+                res.status(200).send({ "Status": "Executed!" });
             }
         });
     }

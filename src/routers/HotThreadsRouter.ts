@@ -17,7 +17,11 @@ class HotThreadsRouter {
     private _configure() {
         this._router.get('/', (req: Request, res: Response, next: NextFunction) => {
             let threadQuerier = new ThreadQuerier(DatabaseConnectionManager.getConnection());
-            threadQuerier.getHotThreadsID().then(hotThreadIDs => res.status(200).send({"IDs": hotThreadIDs}));
+            threadQuerier.getHotThreadsID().then(hotThreadIDs => res.status(200).send({"IDs": hotThreadIDs}))
+                        .catch((err) => {
+                            console.log(err);
+                            res.status(404).send({ "Status": "Not found!" });
+                        });
         });
     }
 }

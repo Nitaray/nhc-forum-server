@@ -18,18 +18,18 @@ export class ThreadModifier extends Modifier {
         this.removeSQL = "DELETE FROM \"Thread\" WHERE \"ThreadID\" = $1";
     }
 
-    public updateCreatorID(threadID: number, newCreatorID: number): void {
+    public async updateCreatorID(threadID: number, newCreatorID: number): Promise<void> {
         let sqlQuery: string = "UPDATE \"Thread\" SET \"CreatorID\" = $1 WHERE \"ThreadID\" = $2";
-        return this.updateOneFieldOfID(threadID, newCreatorID, sqlQuery);
+        await this.updateOneFieldOfID(threadID, newCreatorID, sqlQuery);
     }
 
-    public updateThreadTitle(threadID: number, newThreadTitle: string): void {
+    public async updateThreadTitle(threadID: number, newThreadTitle: string): Promise<void> {
         let sqlQuery: string = "UPDATE \"Thread\" SET \"ThreadTitle\" = $1 WHERE \"ThreadID\" = $2";
-        return this.updateOneFieldOfID(threadID, newThreadTitle, sqlQuery);
+        await this.updateOneFieldOfID(threadID, newThreadTitle, sqlQuery);
     }
 
-    public updateContent(threadID: number, newContent: string): void {
+    public async updateContent(threadID: number, newContent: string): Promise<void> {
         let sqlQuery: string = "UPDATE \"Thread\" SET \"Content\" = $1 WHERE \"ThreadID\" = $2";
-        return this.updateOneFieldOfID(threadID, newContent, sqlQuery);
+        await this.updateOneFieldOfID(threadID, newContent, sqlQuery);
     }
 }

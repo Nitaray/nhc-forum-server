@@ -23,7 +23,7 @@ class LoginRouter {
             let username: string = req.body.Username as string;
 
             if (password == null || username == null) {
-                res.status(400).send("Bad request!");
+                res.status(400).send({ "Status": "Bad request!" });
                 return;
             }
 
@@ -32,7 +32,7 @@ class LoginRouter {
                 userQuerier.getUserByID(userID).then((userData) => {
                     let status: string = userData.getStatus();
                     if (status == "Banned") {
-                        res.status(403).send("Login forbidden, user is banned!");
+                        res.status(403).send({ "Status": "User is banned!" });
                     } else {
                         UserAuthenticator.auth(res, username, password + username).then((ck_pwd) => {
                             console.log(ck_pwd);

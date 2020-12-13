@@ -31,7 +31,7 @@ class RegisterRouter {
             let userQuerier = new UserQuerier(DatabaseConnectionManager.getConnection());
             userQuerier.checkUsername(username).then((isUserExists) => {
                 if (isUserExists) {
-                    res.status(404).send("User already exists!");
+                    res.status(404).send({ "Status": "User already exists!" });
                 } else {
                     let regDateObj = new Date(Date.now());
 
@@ -55,7 +55,7 @@ class RegisterRouter {
                         {key: "\"RoleID\"", value: 3},
                     ]);
 
-                    res.status(200).send("Registration executed!");
+                    res.status(200).send({ "Status": "Registration executed!" });
                 }
             });
         });

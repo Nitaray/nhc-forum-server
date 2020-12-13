@@ -103,7 +103,7 @@ class CommentRouter {
             let deletorToken: string = req.body.DeletorToken;
 
             if (commentID == null || creatorID == null || deletorID == null || deletorToken == null) {
-                res.status(400).send("Bad request!");
+                res.status(400).send({"Status": "Bad request!"});
                 return;
             }
 
@@ -111,18 +111,18 @@ class CommentRouter {
             userQuerier.getRoleID(+deletorID).then((roleID) => {
                 if (deletorID != creatorID) {
                     if (roleID == 3) {
-                        res.status(403).send("Operation not permitted!");
+                        res.status(403).send({"Status": "Operation not permitted!"});
                         return;
                     }
                 }
 
                 //either the editorID == creatorID or roleID of editorID is 1 or 2 (Admin or Mod)
                 if (!TokenManager.checkToken(deletorID, deletorToken)) {
-                    res.status(404).send("Token not found!");
+                    res.status(404).send({"Status": "Token not found!"});
                 } else {
                     let commentModifier: CommentModifier = new CommentModifier(DatabaseConnectionManager.getConnection());
                     commentModifier.remove(commentID);
-                    res.status(200).send("Executed!");
+                    res.status(200).send({"Status": "Executed!"});
                 }
             });
         });

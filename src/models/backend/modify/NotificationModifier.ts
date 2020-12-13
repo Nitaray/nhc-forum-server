@@ -22,8 +22,8 @@ export class NotificationModifier extends Modifier {
         return false;
     }
 
-    public updateContent(ID: number, newContent: string): void {
+    public async updateContent(ID: number, newContent: string): Promise<void> {
         let sqlQuery: string = "UPDATE \"Notification\" SET \"Content\" = $1 WHERE \"NotificationID\" = $2";
-        return this.updateOneFieldOfID(ID, newContent, sqlQuery);
+        await this.updateOneFieldOfID(ID, newContent, sqlQuery);
     }
 }
