@@ -58,11 +58,11 @@ export class UserQuerier extends Querier {
         return fuser;
     }
 
-    public checkUsername(username: string): boolean {
+    public async checkUsername(username: string): Promise<boolean> {
         let SQL: string = "SELECT * FROM \"User\" WHERE \"Username\" = $1";
         let userExists: boolean = false;
         try {
-            this.connection.query(SQL, [username]).then((res) => {
+            await this.connection.query(SQL, [username]).then((res) => {
                 if (res.rowCount > 0)
                     userExists = true;
             }).catch((err) => console.log(err));

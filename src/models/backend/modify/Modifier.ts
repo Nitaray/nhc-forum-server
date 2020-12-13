@@ -86,7 +86,7 @@ export class Modifier {
      * Performs any update operations that change only one column
      * of only one instance with the provided ID.
      */
-    protected updateOneFieldOfID(ID: number, value: any, sqlQuery: string): void {
-        this.queryExecution(sqlQuery, [value, ID]);
+    protected async updateOneFieldOfID(ID: number, value: any, sqlQuery: string): Promise<void> {
+        await this.queryExecution(sqlQuery, [value, ID]);
     }
 }

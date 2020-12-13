@@ -27,23 +27,33 @@ class LoginRouter {
                 return;
             }
 
-            UserAuthenticator.auth(res, username, password + username).then((ck_pwd) => {
-                console.log(ck_pwd);
-                if (ck_pwd) {
-                    let userQuerier = new UserQuerier(DatabaseConnectionManager.getConnection());
-                    let userID: string = "0";
-                    userQuerier.getID(username).then((id) => {
-                        userID = id.toString();
-
-                        res.status(200).send({
-                            "UserID": userID,
-                            "UserToken": TokenManager.createNewToken(userID),
-                            "Status": "OK"
+            let userQuerier = new UserQuerier(DatabaseConnectionManager.getConnection());
+            userQuerier.getID(username).then((userID) => {
+                userQuerier.getUserByID(userID).then((userData) => {
+                    let status: string = userData.getStatus();
+                    if (status == "Banned") {
+                        res.status(403).send("Login forbidden, user is banned!");
+                    } else {
+                        UserAuthenticator.auth(res, username, password + username).then((ck_pwd) => {
+                            console.log(ck_pwd);
+                            if (ck_pwd) {
+                                let userQuerier = new UserQuerier(DatabaseConnectionManager.getConnection());
+                                let userID: string = "0";
+                                userQuerier.getID(username).then((id) => {
+                                    userID = id.toString();
+            
+                                    res.status(200).send({
+                                        "UserID": userID,
+                                        "UserToken": TokenManager.createNewToken(userID),
+                                        "Status": "OK"
+                                    });
+                                });
+                            } else {
+                                res.status(406).send({"Status": "Error"});
+                            }
                         });
-                    });
-                } else {
-                    res.status(406).send({"Status": "Error"});
-                }
+                    }
+                });
             });
         });
     }
