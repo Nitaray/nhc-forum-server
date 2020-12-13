@@ -44,7 +44,7 @@ class ManageMemberRouter {
                         // Extract result
                         if (queryRes.rowCount > 0) {
                             res.status(200).json({ "QueryRes": queryRes.rows }); // send back an array with each row is a JSON object
-                                                                                // containing column's values, e.g. a[0].\"ThreadID\"
+                                                                                // containing column's values, e.g. a[0].ThreadID
                         } else {
                             res.status(404).send({ "Status": "No members!" });
                         }
