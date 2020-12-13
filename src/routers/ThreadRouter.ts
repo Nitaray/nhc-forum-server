@@ -28,7 +28,7 @@ class ThreadRouter {
             let threadQuerier = new ThreadQuerier(DatabaseConnectionManager.getConnection());
             threadQuerier.getThreadByID(threadID).then((threadData) => {
                 if (threadData == null) {
-                    res.status(404).send("Not found!");
+                    res.status(404).send({ "Status": "Not found!" });
                     return;
                 }
     
@@ -57,7 +57,7 @@ class ThreadRouter {
             let dateCreatedObj: Date = new Date(Date.now());
 
             if (title == null || content == null || userID == null || userToken == null) {
-                res.status(400).send("Bad request!");
+                res.status(400).send({ "Status": "Bad request!" });
                 return;
             }
 
@@ -66,7 +66,7 @@ class ThreadRouter {
                                     ('00' + dateCreatedObj.getUTCDate()).slice(-2) + ' 00:00:00';
 
             if (!TokenManager.checkToken(userID.toString(), userToken)) {
-                res.status(404).send("Token not found!");
+                res.status(404).send({ "Status": "Token not found!" });
             } else {
                 let threadModifier: ThreadModifier = new ThreadModifier(DatabaseConnectionManager.getConnection());
                 threadModifier.add([
@@ -75,7 +75,7 @@ class ThreadRouter {
                     {key: "\"Content\"", value: content},
                     {key: "\"DateCreated\"", value: dateCreated},
                 ]);
-                res.status(200).send("Executed!");
+                res.status(200).send({"Status": "Executed!"});
             }
         });
 
@@ -88,9 +88,9 @@ class ThreadRouter {
             if (TokenManager.checkToken(userID, userToken)) {
                 let threadModifier: ThreadModifier = new ThreadModifier(DatabaseConnectionManager.getConnection());
                 threadModifier.updateContent(threadID, content);
-                res.status(200).send("Executed!");
+                res.status(200).send({ "Status": "Executed!" });
             } else {
-                res.status(404).send("Token not found!")
+                res.status(404).send({ "Status": "Token not found!" });
             }
         });
 
@@ -103,9 +103,9 @@ class ThreadRouter {
             if (TokenManager.checkToken(userID, userToken)) {
                 let threadModifier: ThreadModifier = new ThreadModifier(DatabaseConnectionManager.getConnection());
                 threadModifier.updateThreadTitle(threadID, title);
-                res.status(200).send("Executed!");
+                res.status(200).send({ "Status": "Executed!" });
             } else {
-                res.status(404).send("Token not found!");
+                res.status(404).send({ "Status": "Token not found!" });
             }
         });
 
@@ -122,18 +122,18 @@ class ThreadRouter {
                     userQuerier.getRoleID(+creatorID).then((creatorRoleID) => {
                         if (deletorID != creatorID) {
                             if (+deletorRoleID >= +creatorRoleID) {
-                                res.status(403).send("Forbidden!");
+                                res.status(403).send({ "Status": "Forbidden!" });
                                 return;
                             }
                         }
     
                         //either the editorID == creatorID or roleID of editorID is 1 or 2 (Admin or Mod)
                         if (!TokenManager.checkToken(deletorID, deletorToken)) {
-                            res.status(404).send("Not found!");
+                            res.status(404).send({ "Status": "Not found!" });
                         } else {
                             let threadModifier: ThreadModifier = new ThreadModifier(DatabaseConnectionManager.getConnection());
                             threadModifier.remove(threadID);
-                            res.status(200).send("Executed!");
+                            res.status(200).send({ "Status": "Executed!" });
                         }
                     });
                 });

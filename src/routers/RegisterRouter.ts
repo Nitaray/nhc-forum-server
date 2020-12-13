@@ -20,7 +20,7 @@ class RegisterRouter {
     private _configure() {
         this._router.post('/', bodyParser.json(), (req: Request, res: Response, next: NextFunction) => {
             if (req.body.Username == null || req.body.Email == null || req.body.Password == null) {
-                res.status(400).send("Missing POST data!");
+                res.status(400).send({ "Status": "Bad request!" });
                 return;
             }
 
