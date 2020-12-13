@@ -94,11 +94,12 @@ export class ThreadQuerier extends Querier {
     }
 
     public async getHotThreadsID(): Promise<Array<number>> {
-        let SQL: string = "SELECT TOP 100 Thread.\"ThreadID\" FROM Thread " +
-                        "JOIN Comment C on Thread.\"ThreadID\" = C.\"ThreadID\" " +
-                        "WHERE DATEDIFF(day, C.\"DateCreated\", GETDATE()) <= 30 " +
-                        "GROUP BY Thread.\"ThreadID\" " +
-                        "ORDER BY COUNT(\"CommentID\") DESC";
+        let SQL: string = "SELECT \"Thread\".\"ThreadID\" FROM \"Thread\"" + 
+                        "JOIN \"Comment\" C on \"Thread\".\"ThreadID\" = C.\"ContainingThreadID\"" +
+                        "WHERE date_part('day', NOW() - C.\"DateCreated\") <= 30 "
+                        "GROUP BY \"Thread\".\"ThreadID\"" +
+                        "ORDER BY COUNT(\"CommentID\") DESC" +
+                        "LIMIT 100"
         try {
             let ids: Array<number> = new Array<number>();
 
