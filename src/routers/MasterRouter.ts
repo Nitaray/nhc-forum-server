@@ -1,7 +1,7 @@
 import * as express from 'express';
 import { ThreadRouter } from './ThreadRouter';
 import { CommentRouter } from './CommentRouter';
-import { AdminQueryRouter } from './AdminQueryRouter';
+import { ManageMemberRouter } from './ManageMemberRouter';
 import { LoginRouter } from './LoginRouter';
 import { RegisterRouter } from './RegisterRouter';
 import { HotThreadsRouter } from './HotThreadsRouter';
@@ -15,7 +15,7 @@ class MasterRouter {
     private _router = express.Router();
     private _threadRouter = ThreadRouter;
     private _commentRouter = CommentRouter;
-    private _adminQueryRouter = AdminQueryRouter;
+    private _manageMemberRouter = ManageMemberRouter;
     private _loginRouter = LoginRouter;
     private _registerRouter = RegisterRouter;
     private _hotThreadsRouter = HotThreadsRouter;
@@ -37,7 +37,7 @@ class MasterRouter {
     private _configure() {
         this._router.use('/api/thread', this._threadRouter);
         this._router.use('/api/comment', this._commentRouter);
-        // this._router.use('/api/performAdminQuery', this._adminQueryRouter);
+        this._router.use('/api/manageMember', this._manageMemberRouter);
         this._router.use('/api/login', this._loginRouter);
         this._router.use('/api/register', this._registerRouter);
         this._router.use('/api/hotPosts', this._hotThreadsRouter);

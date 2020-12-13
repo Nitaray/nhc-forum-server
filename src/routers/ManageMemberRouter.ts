@@ -4,7 +4,7 @@ import { DatabaseConnectionManager } from '../models/backend/database/DatabaseCo
 import * as bodyParser from 'body-parser';
 import { UserModifier } from '../models/backend/modify/UserModifier';
 
-class AdminQueryRouter {
+class ManageMemberRouter {
     private _router = express.Router();
     
     get router() {
@@ -83,6 +83,6 @@ class AdminQueryRouter {
     }
 }
 
-let router = new AdminQueryRouter().router;
+let router = new ManageMemberRouter().router;
 
-export { router as AdminQueryRouter };
+export { router as ManageMemberRouter };
