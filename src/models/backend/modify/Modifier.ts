@@ -35,6 +35,7 @@ export class Modifier {
 
     public add(values: Array<StringValuePair>): void {
         let queryValues: any[] = this.setParams(values);
+        console.log(queryValues);
         this.queryExecution(this.addSQL, queryValues);
     }
 

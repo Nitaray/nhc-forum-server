@@ -61,9 +61,9 @@ class FollowedThreadsRouter {
             } else {
                 let followModifier = new FollowModifier(DatabaseConnectionManager.getConnection());
                 followModifier.add([
-                    {key: "UserID", value: +userID},
-                    {key: "ThreadID", value: +threadID},
-                    {key: "FollowedSince", value: followDate},
+                    {key: "\"UserID\"", value: +userID},
+                    {key: "\"ThreadID\"", value: +threadID},
+                    {key: "\"FollowedSince\"", value: followDate},
                 ]);
                 res.status(200).send({ "Status": "Executed!" });
             }

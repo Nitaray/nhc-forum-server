@@ -43,7 +43,7 @@ export class ThreadQuerier extends Querier {
     }
 
     public async getRecentThreadsID(): Promise<Array<number>> {
-        let SQL: string = "SELECT TOP 100 \"ThreadID\" FROM \"Thread\" ORDER BY \"DateCreated\" DESC";
+        let SQL: string = "SELECT \"ThreadID\" FROM \"Thread\" ORDER BY \"DateCreated\" DESC LIMIT 100";
         try {
             let ids: Array<number> = new Array<number>()
             await this.connection.query(SQL).then((res) => {
@@ -60,7 +60,7 @@ export class ThreadQuerier extends Querier {
     }
 
     public getThreadTitle(ID: number): string {
-        let SQL: string = "SELECT \"ThreadTitle\" FROM Thread WHERE \"ThreadID\" = $1";
+        let SQL: string = "SELECT \"ThreadTitle\" FROM \"Thread\" WHERE \"ThreadID\" = $1";
         try {
             let title: string = "";
             this.connection.query(SQL, [ID]).then((res) => title = res.rows[0].ThreadTitle).catch((err) => console.log(err));
@@ -73,10 +73,10 @@ export class ThreadQuerier extends Querier {
     }
 
     public getTopThreadsID(): Array<number> {
-        let SQL: string = "SELECT TOP 100 Thread.\"ThreadID\" FROM \"Thread\" " +
-                        "JOIN Comment C on Thread.\"ThreadID\" = C.\"ThreadID\" " +
-                        "GROUP BY Thread.\"ThreadID\" " +
-                        "ORDER BY COUNT(\"CommentID\") DESC;";
+        let SQL: string = "SELECT \"Thread\".\"ThreadID\" FROM \"Thread\" " +
+                        "JOIN Comment C on \"Thread\".\"ThreadID\" = C.\"ThreadID\" " +
+                        "GROUP BY \"Thread\".\"ThreadID\" " +
+                        "ORDER BY COUNT(\"CommentID\") DESC LIMIT 100;";
         try {
             let ids: Array<number> = new Array<number>();
             
@@ -117,10 +117,10 @@ export class ThreadQuerier extends Querier {
     }
 
     public async getFollowedThreadsID(creatorID: number): Promise<Array<number>> {
-        let SQL: string = "SELECT Thread.\"ThreadID\" FROM Thread " +
-                        "JOIN Follows F on Thread.\"ThreadID\" = F.\"ThreadID\" " +
-                        "WHERE F.\"CreatorID\" = $1 " +
-                        "ORDER BY F.\"FollowedSince\" DESC ";
+        let SQL: string = "SELECT \"Thread\".\"ThreadID\" FROM \"Thread\" " +
+                        "JOIN \"Follows\" on \"Thread\".\"ThreadID\" = \"Follows\".\"ThreadID\" " +
+                        "WHERE \"Follows\".\"UserID\" = $1 " +
+                        "ORDER BY \"Follows\".\"FollowedSince\" DESC ";
         try {
             let ids: Array<number> = new Array<number>();
 
@@ -138,7 +138,7 @@ export class ThreadQuerier extends Querier {
     }
 
     public getThreadIDByUserIDAndTime(creatorID: number, time: Date): number {
-        let SQL: string = "SELECT \"ThreadID\" FROM Thread WHERE \"CreatorID\" = $1 AND \"DateCreated\"::date >= $2 AND \"DateCreated\"::date <= $3";
+        let SQL: string = "SELECT \"ThreadID\" FROM \"Thread\" WHERE \"CreatorID\" = $1 AND \"DateCreated\"::date >= $2 AND \"DateCreated\"::date <= $3";
 
         let date: string = time.getUTCFullYear() + '-' +
                             ('00' + (time.getUTCMonth()+1)).slice(-2) + '-' +
