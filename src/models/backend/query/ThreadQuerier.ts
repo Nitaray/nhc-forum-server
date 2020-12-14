@@ -99,7 +99,7 @@ export class ThreadQuerier extends Querier {
                         "WHERE date_part('day', NOW() - C.\"DateCreated\") <= 30 "
                         "GROUP BY \"Thread\".\"ThreadID\"" +
                         "ORDER BY COUNT(\"CommentID\") DESC" +
-                        "LIMIT 100"
+                        " LIMIT 100";
         try {
             let ids: Array<number> = new Array<number>();
 
