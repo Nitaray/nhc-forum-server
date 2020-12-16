@@ -35,6 +35,11 @@ class MasterRouter {
     * Connect routes to their matching routers.
     */
     private _configure() {
+        this._router.use(function(req, res, next) {
+            res.header("Access-Control-Allow-Origin", "*");
+            res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+            next();
+          });
         this._router.use('/api/thread', this._threadRouter);
         this._router.use('/api/comment', this._commentRouter);
         this._router.use('/api/manageMember', this._manageMemberRouter);
