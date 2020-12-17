@@ -53,6 +53,9 @@ class LoginRouter {
                             }
                         });
                     }
+                }).catch((err) => {
+                    res.status(403).send({'Validation status': 'Invalid authentication information!'});
+                    console.log(err);
                 });
             });
         });
