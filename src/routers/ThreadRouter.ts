@@ -150,7 +150,7 @@ class ThreadRouter {
 
             let threadQuerier: ThreadQuerier = new ThreadQuerier(DatabaseConnectionManager.getConnection());
             threadQuerier.searchThreadByTitle(title).then(qres => res.status(200).send({ "IDs": qres })).catch(err => console.log(err));
-        })
+        });
     }
 }
 
