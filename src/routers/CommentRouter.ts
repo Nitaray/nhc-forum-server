@@ -55,7 +55,7 @@ class CommentRouter {
             }
 
             if (!TokenManager.checkToken(userID, userToken)) {
-                res.status(404).send("Token not found!");
+                res.status(403).send("Forbidden!");
             } else {
                 let dateCreated: string = dateCreatedObj.getUTCFullYear() + '-' +
                                         ('00' + (dateCreatedObj.getUTCMonth()+1)).slice(-2) + '-' +
