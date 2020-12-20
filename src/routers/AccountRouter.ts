@@ -8,7 +8,7 @@ import { RoleModifier } from '../models/backend/modify/RoleModifier';
 import { Role } from '../models/backend/component/Role';
 import { TokenManager } from '../models/backend/auth/TokenManager';
 
-class MyAccountRouter {
+class AccountRouter {
     private _router = express.Router();
     
     get router() {
@@ -36,7 +36,7 @@ class MyAccountRouter {
             userQuerier.getRoleID(+userID).then((getterRole) => {
                 userQuerier.getRoleID(+userIDToGet).then((userToGetRole) => {
                     if (userID != userIDToGet) {
-                        if (getterRole == 3) {
+                        if (getterRole <= userToGetRole) {
                             res.status(403).send("Forbidden!");
                             return;
                         }
@@ -47,7 +47,7 @@ class MyAccountRouter {
                         return;
                     }
         
-                    userQuerier.getUserByID(+userID).then((qres) => {
+                    userQuerier.getUserByID(+userIDToGet).then((qres) => {
                         let roleID: number = qres.getRoleID();
                         let role: string = "Normal user";
                         if (roleID == 1) role = "Admin";
@@ -91,6 +91,6 @@ class MyAccountRouter {
     }
 }
 
-let router = new MyAccountRouter().router;
+let router = new AccountRouter().router;
 
-export { router as MyAccountRouter };
+export { router as AccountRouter };
