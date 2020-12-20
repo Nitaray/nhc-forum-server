@@ -6,6 +6,7 @@ import { UserQuerier } from '../models/backend/query/UserQuerier';
 import { User } from '../models/backend/component/User';
 import { RoleModifier } from '../models/backend/modify/RoleModifier';
 import { Role } from '../models/backend/component/Role';
+import { TokenManager } from '../models/backend/auth/TokenManager';
 
 class MyAccountRouter {
     private _router = express.Router();
@@ -20,9 +21,11 @@ class MyAccountRouter {
 
     private _configure() {
         this._router.get('/getAccountData', function(req, res) {
-            let userID: string = req.query.UserID as string;
+            let userID: string = req.query.GetterID as string;
+            let userToken: string = req.query.GetterToken as string;
+            let userIDToGet: string = req.query.UserIDToGet as string;
 
-            if (userID == null) {
+            if (userID == null || userToken == null) {
                 res.status(400).send("Bad request!");
                 return;
             }
@@ -30,23 +33,39 @@ class MyAccountRouter {
             let connection: pg.Pool = DatabaseConnectionManager.getConnection();
 
             let userQuerier: UserQuerier = new UserQuerier(connection);
-            userQuerier.getUserByID(+userID).then((qres) => {
-                let roleID: number = qres.getRoleID();
-                let role: string = "Normal user";
-                if (roleID == 1) role = "Admin";
-                else role = "Moderator";
+            userQuerier.getRoleID(+userID).then((getterRole) => {
+                userQuerier.getRoleID(+userIDToGet).then((userToGetRole) => {
+                    if (userID != userIDToGet) {
+                        if (getterRole == 3) {
+                            res.status(403).send("Forbidden!");
+                            return;
+                        }
+                    }
 
-                res.status(200).send({"Username": qres.getUsername,
-                                    "Email": qres.getEmail(),
-                                    "FirstName": qres.getFirstName(),
-                                    "LastName": qres.getLastName(),
-                                    "Status": qres.getStatus(),
-                                    "Role": role,
-                                    "Gender": qres.getGender(),
-                                    "About": qres.getAbout(),
-                                    "DateOfBirth": qres.getDateOfBirth(),
-                                    "RegistrationDate": qres.getRegistrationDate(),
-                                    "Country": qres.getCountry()});
+                    if (!TokenManager.checkToken(userID, userToken)) {
+                        res.status(403).send("Forbidden!");
+                        return;
+                    }
+        
+                    userQuerier.getUserByID(+userID).then((qres) => {
+                        let roleID: number = qres.getRoleID();
+                        let role: string = "Normal user";
+                        if (roleID == 1) role = "Admin";
+                        else role = "Moderator";
+        
+                        res.status(200).send({"Username": qres.getUsername,
+                                            "Email": qres.getEmail(),
+                                            "FirstName": qres.getFirstName(),
+                                            "LastName": qres.getLastName(),
+                                            "Status": qres.getStatus(),
+                                            "Role": role,
+                                            "Gender": qres.getGender(),
+                                            "About": qres.getAbout(),
+                                            "DateOfBirth": qres.getDateOfBirth(),
+                                            "RegistrationDate": qres.getRegistrationDate(),
+                                            "Country": qres.getCountry()});
+                    });
+                });
             });
         });
 
