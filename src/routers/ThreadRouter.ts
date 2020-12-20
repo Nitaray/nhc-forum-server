@@ -141,7 +141,7 @@ class ThreadRouter {
         });
 
         this._router.get('/searchThreadTitle', (req, res, next) => {
-            let title: string = req.query.ThreadTitle as string;
+            let title: string = req.query.TitleToSearch as string;
 
             if (title == null) {
                 res.status(400).send("Bad request!");
