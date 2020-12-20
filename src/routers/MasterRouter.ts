@@ -10,6 +10,7 @@ import { FollowedThreadsRouter } from './FollowedThreadsRouter';
 import { LogoutRouter } from './LogoutRouter';
 import { DatabaseConnectionManager } from '../models/backend/database/DatabaseConnectionManager';
 import * as pg from 'pg';
+import { MyAccountRouter } from './MyAccountRouter';
 
 class MasterRouter {
     private _router = express.Router();
@@ -22,6 +23,7 @@ class MasterRouter {
     private _newThreadsRouter = NewThreadsRouter;
     private _followedThreadsRouter = FollowedThreadsRouter;
     private _logoutRouter = LogoutRouter;
+    private _myAccountRouter = MyAccountRouter;
 
     get router() {
         return this._router;
@@ -49,6 +51,7 @@ class MasterRouter {
         this._router.use('/api/newPosts', this._newThreadsRouter);
         this._router.use('/api/followedPosts', this._followedThreadsRouter);
         this._router.use('/api/logout', this._logoutRouter);
+        this._router.use('/api/myAccount', this._myAccountRouter);
 
         this._router.post('/addPredefinedRoles', function(req, res) {
             let sqlQuery: string = "INSERT INTO \"Role\" (\"RoleName\") VALUES ('Admin');" +
