@@ -26,7 +26,7 @@ class CommentRouter {
             let commentQuerier = new CommentQuerier(DatabaseConnectionManager.getConnection());
             commentQuerier.getCommentByID(commentID).then((commentData) => {
                 if (commentData == null) {
-                    res.status(404).send("Not found!");
+                    res.status(400).send({ "Status": "Bad request!" });
                     return;
                 }
 
@@ -50,12 +50,12 @@ class CommentRouter {
             let userID: string = req.body.CreatorID;
 
             if (containingThreadID == null || content == null || userToken == null || userID == null) {
-                res.status(400).send("Bad request!");
+                res.status(400).send({ "Status": "Bad request!" });
                 return;
             }
 
             if (!TokenManager.checkToken(userID, userToken)) {
-                res.status(403).send("Forbidden!");
+                res.status(403).send({ "Status": "Forbidden!" });
             } else {
                 let dateCreated: string = dateCreatedObj.getUTCFullYear() + '-' +
                                         ('00' + (dateCreatedObj.getUTCMonth()+1)).slice(-2) + '-' +
@@ -82,17 +82,17 @@ class CommentRouter {
             let userToken: string = req.body.UserToken;
 
             if (commentID == null || content == null || userToken == null || userID == null) {
-                res.status(400).send("Bad request!");
+                res.status(400).send({ "Status": "Bad request!" });
                 return;
             }
 
             //either the editorID == creatorID or roleID of editorID is 1 or 2 (Admin or Mod)
             if (!TokenManager.checkToken(userID, userToken)) {
-                res.status(404).send("Token not found!");
+                res.status(403).send({ "Status": "Forbidden!" });
             } else {
                 let commentModifier: CommentModifier = new CommentModifier(DatabaseConnectionManager.getConnection());
                 commentModifier.updateContent(commentID, content);
-                res.status(200).send("Executed!");
+                res.status(200).send({ "Status": "Executed!" });
             }
         });
 
@@ -118,7 +118,7 @@ class CommentRouter {
 
                 //either the editorID == creatorID or roleID of editorID is 1 or 2 (Admin or Mod)
                 if (!TokenManager.checkToken(deletorID, deletorToken)) {
-                    res.status(404).send({"Status": "Token not found!"});
+                    res.status(400).send({"Status": "Forbidden!"});
                 } else {
                     let commentModifier: CommentModifier = new CommentModifier(DatabaseConnectionManager.getConnection());
                     commentModifier.remove(commentID);

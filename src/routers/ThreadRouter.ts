@@ -139,6 +139,18 @@ class ThreadRouter {
                 });
             });
         });
+
+        this._router.get('/searchThreadTitle', (req, res, next) => {
+            let title: string = req.query.ThreadTitle as string;
+
+            if (title == null) {
+                res.status(400).send("Bad request!");
+                return;
+            }
+
+            let threadQuerier: ThreadQuerier = new ThreadQuerier(DatabaseConnectionManager.getConnection());
+            threadQuerier.searchThreadByTitle(title).then(qres => res.status(200).send({ "IDs": qres })).catch(err => console.log(err));
+        })
     }
 }
 

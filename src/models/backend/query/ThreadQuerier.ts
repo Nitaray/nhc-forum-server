@@ -137,6 +137,19 @@ export class ThreadQuerier extends Querier {
         return null;
     }
 
+    public async searchThreadByTitle(title: string): Promise<Array<number>> {
+        let sqlQuery: string = "SELECT \"ThreadID\" FROM \"Thread\" " +
+                                "WHERE \"ThreadTitle\" LIKE '%" + title + "%'";
+        let threadIDs: Array<number> = new Array<number>();
+        await this.connection.query(sqlQuery).then((res) => {
+            for (let i = 0; i < res.rowCount; ++i) {
+                threadIDs.push(res.rows[i].ThreadID);
+            }
+        }).catch(err => console.log(err));
+
+        return threadIDs;
+    }
+
     public getThreadIDByUserIDAndTime(creatorID: number, time: Date): number {
         let SQL: string = "SELECT \"ThreadID\" FROM \"Thread\" WHERE \"CreatorID\" = $1 AND \"DateCreated\"::date >= $2 AND \"DateCreated\"::date <= $3";
 
